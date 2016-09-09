@@ -5,7 +5,7 @@ from .models import Note
 
 
 class NoteResourceTest(ResourceTestCaseMixin, TestCase):
-    fixtures = ['note.json', 'user.json']
+    fixtures = ['user.json', 'note.json']
 
     def setUp(self):
         super(NoteResourceTest, self).setUp()
