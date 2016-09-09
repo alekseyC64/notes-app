@@ -21,9 +21,12 @@ $ mysql -u root -p -h localhost
 ```
 ```sh
 mysql> CREATE DATABASE notesapp_db CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE test_notesapp_db CHARACTER SET utf8 COLLATE utf8_general_ci;
 ```
+
 ```sh
 mysql> GRANT ALL PRIVILEGES ON notesapp_db.* TO 'bigdaddy'@'localhost' IDENTIFIED BY 'bigdb';
+mysql> GRANT ALL PRIVILEGES ON test_notesapp_db.* TO 'bigdaddy'@'localhost' IDENTIFIED BY 'bigdb';
 ```
 
 ##### Type `'help;'` or `'\h'` for help. Type `'\c'` to `clear` the current input statement.
