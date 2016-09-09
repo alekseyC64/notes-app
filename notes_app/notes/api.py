@@ -8,7 +8,7 @@ from notes.models import Note
 class NoteAuthorization(Authorization):
     # READ notes
     def read_list(self, object_list, bundle):
-        if bundle.request.user.is_authenticated:
+        if bundle.request.user.is_authenticated():
             return object_list.filter(owner=bundle.request.user)
         else:
             raise Unauthorized("Not allowed")
@@ -44,7 +44,7 @@ class NoteResource(ModelResource):
         resource_name = 'note'
         authorization = NoteAuthorization()
         list_allowed_methods = ['get', 'post']
-        detail_allowed_methods = ['get', 'patch']
+        detail_allowed_methods = ['get', 'put', 'patch']
 
 
 class UserResource(ModelResource):
