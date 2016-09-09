@@ -1,0 +1,36 @@
+[
+  {
+    "model": "notes.note",
+    "pk": 1,
+    "fields": {
+      "title": "Hello world!",
+      "content": "It's a beautiful note.",
+      "owner": 2,
+      "created_on": "2016-09-09T08:02:46.504Z",
+      "updated_on": "2016-09-09T08:02:46.504Z"
+    }
+  },
+  {
+    "model": "notes.note",
+    "pk": 2,
+    "fields": {
+      "title": "Foo",
+      "content": "Bar baz",
+      "owner": 2,
+      "created_on": "2016-09-09T09:12:46.504Z",
+      "updated_on": "2016-09-09T09:12:46.504Z"
+    }
+  },
+  {
+    "model": "notes.note",
+    "pk": 3,
+    "fields": {
+      "title": "IMPORTANT!!!",
+      "content": "ALL OF YOU SHOULD READ THIS!!!",
+      "owner": 2,
+      "shared_with": [2, 3, 4],
+      "created_on": "2016-09-09T09:35:12.504Z",
+      "updated_on": "2016-09-09T09:35:12.504Z"
+    }
+  }
+]
