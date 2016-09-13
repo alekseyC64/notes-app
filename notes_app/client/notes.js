@@ -10,41 +10,18 @@
       $stateProvider.state({
         'name': 'notes',
         'url': '/',
-        'component': 'notesList',
+        'template': '<notes-list notes="$resolve.notes"></notes-list>',
         'resolve': {
-          'data': function(notesService) {
-            return notesService.get();
+          notes: function(notesService) {
+            return notesService.getList().then(function(response) {
+              return response.data.objects;
+            }).catch(function(response) {
+              console.error('Error when loading notes');
+            });
           }
         }
       })
       $urlRouterProvider.otherwise("/");
     }
   ]);
-
-  angular.module('notes').component('notesList', {
-    'templateUrl': 'templates/notes.tpl.html',
-    'controller': function NotesCtrl(notesService) {
-    },
-    'bindings': {
-      'data': '<'
-    }
-  });
-
-  angular.module('notes').factory('notesService', ['$http', function($http) {
-    return {
-      'get': function() {
-        return new Promise(function(fulfill, reject) {
-          $http({
-            'method': 'get',
-            'url': 'http://localhost:8000/api/v1/note/'
-          }).then(function(response) {
-            fulfill(response.data);
-          }, function(response) {
-            console.log(response.data.error_message);
-          })
-        });
-      }
-    }
-  }]);
-
 })();
