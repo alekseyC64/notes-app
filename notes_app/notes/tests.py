@@ -16,11 +16,13 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
 
         self.api_list = '/api/v1/note/'
         self.api_detail = '/api/v1/note/1/'
+
         self.entry1 = User.objects.get(id=1)
         self.post_data = {
             'title': 'New note title',
             'content': 'Some content',
             'owner': self.user.id
+
         }
 
     def get_credentials(self):
