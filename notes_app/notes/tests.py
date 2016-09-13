@@ -16,7 +16,8 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
 
         self.api_list = '/api/v1/note/'
         self.api_detail = '/api/v1/note/1/'
-        self.entry1 = User.objects.get(id=1)
+        self.api_detail_shared = '/api/v1/note/4/'
+        self.api_detail_not_shared = '/api/v1/note/5/'
         self.post_data = {
             'title': 'New note title',
             'content': 'Some content',
@@ -35,12 +36,16 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
 
     def test_get_list_json(self):
         """Authenticated user should get back a list of notes owned by them."""
+        owned_count = Note.objects.filter(owner=self.user).count()
+        shared_count = Note.objects.filter(shared_with=self.user.id).count()
+        total_count = owned_count + shared_count
+
         resp = self.api_client.get(
             self.api_list,
             format='json',
             authentication=self.get_credentials())
         self.assertValidJSONResponse(resp)
-        self.assertEqual(len(self.deserialize(resp)['objects']), 3)
+        self.assertEqual(len(self.deserialize(resp)['objects']), total_count)
         self.assertEqual(self.deserialize(resp)['objects'][0], {
             "content": "It's a beautiful note.",
             "created_on": "2016-09-09T08:02:46.504000",
@@ -67,6 +72,28 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
             u'resource_uri'])
         self.assertEqual(self.deserialize(resp)[u'title'], 'Hello world!')
 
+    def test_get_detail_json_other_user(self):
+        """Authenticated user shouldn't be able to read other users' notes."""
+        self.assertHttpUnauthorized(self.api_client.get(
+            self.api_detail_shared,
+            format='json',
+            authentication=self.get_credentials()
+        ))
+
+    def test_get_detail_json_shared(self):
+        """Authenticated user should be able to read a note that was shared \
+            with them"""
+        resp = self.api_client.get(
+            self.api_detail_shared,
+            format='json',
+            authentication=self.get_credentials()
+        )
+        self.assertValidJSONResponse(resp)
+        self.assertKeys(self.deserialize(resp), [
+            u'id', u'title', u'content', u'created_on', u'updated_on',
+            u'resource_uri'])
+        self.assertEqual(self.deserialize(resp)[u'title'], 'Shared Note')
+
     def test_post_list_unauthenticated(self):
         """Unauthenticated user shouldn't be able to create notes."""
         self.assertHttpUnauthorized(self.api_client.post(
@@ -74,13 +101,14 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
 
     def test_post_list(self):
         """Authenticated user should be able to create notes."""
-        self.assertEqual(Note.objects.count(), 3)
+        owned_count = Note.objects.filter(owner=self.user).count()
+        self.assertEqual(Note.objects.count(), owned_count)
         self.assertHttpCreated(self.api_client.post(
             self.api_list,
             format='json',
             data=self.post_data,
             authentication=self.get_credentials()))
-        self.assertEqual(Note.objects.count(), 4)
+        self.assertEqual(Note.objects.count(), owned_count+1)
 
     def test_put_detail_unauthenticated(self):
         """Unauthenticated user shouln't be able to update notes."""
@@ -89,22 +117,25 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
 
     def test_put_detail(self):
         """Authenticated user should be able to update notes owned by them."""
+        owned_count = Note.objects.filter(owner=self.user).count()
+        new_title = 'New Title'
+        new_content = 'New Content'
         original_data = self.deserialize(self.api_client.get(
             self.api_detail, format='json',
             authentication=self.get_credentials()))
         new_data = original_data.copy()
-        new_data['title'] = 'New Title'
-        new_data['content'] = 'New Content'
-        self.assertEqual(Note.objects.count(), 3)
+        new_data['title'] = new_title
+        new_data['content'] = new_content
+        self.assertEqual(Note.objects.count(), owned_count)
 
         self.assertHttpAccepted(self.api_client.put(
             self.api_detail,
             format='json',
             data=new_data,
             authentication=self.get_credentials()))
-        self.assertEqual(Note.objects.count(), 3)
-        self.assertEqual(Note.objects.get(pk=1).title, 'New Title')
-        self.assertEqual(Note.objects.get(pk=1).content, 'New Content')
+        self.assertEqual(Note.objects.count(), owned_count)
+        self.assertEqual(Note.objects.get(pk=1).title, new_title)
+        self.assertEqual(Note.objects.get(pk=1).content, new_title)
 
     def test_delete_detail_unauthenticated(self):
         """Delete HTTP request is not allowed"""
