@@ -102,13 +102,13 @@ class UserResource(ModelResource):
 class NoteResource(ModelResource):
     owner = fields.ForeignKey(UserResource, 'owner')
     shared_with = fields.ManyToManyField(
-        UserResource, 'shared_notes', full=True, null=True, blank=True)
+        UserResource, 'shared_with', full=True, null=True, blank=True)
 
     class Meta:
         queryset = Note.objects.all()
         resource_name = 'note'
         # fields = []
         authorization = NoteAuthorization()
-        list_allowed_methods = ['get']
+        list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'patch']
         authentication = BasicAuthentication()
