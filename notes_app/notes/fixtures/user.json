@@ -24,7 +24,7 @@
       "username": "test",
       "first_name": "Tester",
       "last_name": "Coolguy",
-      "is_active": false,
+      "is_active": true,
       "is_superuser": false,
       "is_staff": false,
       "last_login": "2016-09-09T08:01:45.820Z",
