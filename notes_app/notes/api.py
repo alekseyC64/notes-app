@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib.auth.models import User
 from tastypie.authorization import Authorization
 from tastypie.authentication import BasicAuthentication
@@ -11,20 +12,23 @@ class NoteAuthorization(Authorization):
     # READ notes
     def read_list(self, object_list, bundle):
         if bundle.request.user.is_authenticated():
-            return object_list.filter(owner=bundle.request.user)
+            return object_list.filter(
+                Q(owner=bundle.request.user) |
+                Q(shared_with=bundle.request.user.id))
         else:
             raise Unauthorized("Not allowed")
 
     # READ note
     def read_detail(self, object_list, bundle):
-        return bundle.obj.owner == bundle.request.user
+        return bundle.obj.owner == bundle.request.user or \
+            bundle.obj.shared_with.filter(id=bundle.request.user.id).exists()
 
     def create_list(self, object_list, bundle):
         return Unauthorized("Not allowed")
 
     # CREATE note
     def create_detail(self, object_list, bundle):
-        return bundle.obj.user == bundle.request.user
+        return bundle.obj.owner == bundle.request.user
 
     def update_list(self, object_list, bundle):
         return Unauthorized("Not allowed")
@@ -38,7 +42,6 @@ class NoteAuthorization(Authorization):
 
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Deletes not allowed")
-
 
 
 # Custom User Authorization
@@ -98,7 +101,8 @@ class UserResource(ModelResource):
 
 class NoteResource(ModelResource):
     owner = fields.ForeignKey(UserResource, 'owner')
-    shared_with = fields.ManyToManyField(UserResource, 'shared_notes', full=True, null=True, blank=True)
+    shared_with = fields.ManyToManyField(
+        UserResource, 'shared_notes', full=True, null=True, blank=True)
 
     class Meta:
         queryset = Note.objects.all()
