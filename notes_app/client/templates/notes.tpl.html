@@ -1,2 +1,13 @@
-<h1>Notes</h1>
-<note ng-repeat="note in $ctrl.notes" note="note">
+<div class="row">
+  <nav class="navbar navbar-default col-xs-12">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="" ui-sref="note.list">Notes</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="" ui-sref="note.add">Add Note</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+<ui-view></ui-view>

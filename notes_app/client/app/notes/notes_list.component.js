@@ -8,7 +8,7 @@
   };
 
   angular.module('notes').component('notesList', {
-    templateUrl: 'templates/notes.tpl.html',
+    templateUrl: 'templates/notes_list.tpl.html',
     controller: NotesCtrl,
     bindings: {
       notes: '<'

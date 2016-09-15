@@ -1,4 +1,10 @@
-<div class="note">
-  <h2 class="note-title">{{$ctrl.note.title}}</h2>
-  <p class="note-content">{{$ctrl.note.content}}</p>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">{{$ctrl.note.title}}</h2>
+  </div>
+  <div class="panel-body">{{$ctrl.note.content}}</div>
+  <div class="panel-footer">
+    Created on {{$ctrl.note.created_on | date}},
+    updated on {{$ctrl.note.updated_on | date}}
+  </div>
 </div>
