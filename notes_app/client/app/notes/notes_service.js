@@ -13,7 +13,6 @@
         return $http.get(api_path + id + '/');
       },
       'create': function(note) {
-        note['owner'] = '/api/v1/user/1/';
         return $http.post(api_path, note);
       }
     }
