@@ -1,19 +1,40 @@
 (function() {
   'use strict';
 
-  notesService.$inject = ['$http'];
+  notesService.$inject = ['$http', '$log'];
 
-  function notesService($http) {
+  function notesService($http, $log) {
     var api_path = 'http://localhost:8000/api/v1/note/';
     return {
       'list': function() {
-        return $http.get(api_path);
+        return new Promise(function(fulfill, reject) {
+          $http.get(api_path).then(function(response) {
+            fulfill(response.data);
+          }).catch(function(response) {
+            $log.error('Problem with fetching data from the server');
+            reject(response);
+          });
+        });
       },
       'read': function(id) {
-        return $http.get(api_path + id + '/');
+        return new Promise(function(fulfill, reject) {
+          $http.get(api_path).then(function(response) {
+            fulfill(response.data);
+          }).catch(function(response) {
+            $log.error('Problem with fetching data from the server');
+            reject(response);
+          })
+        })
       },
       'create': function(note) {
-        return $http.post(api_path, note);
+        return new Promise(function(fulfill, reject) {
+          $http.post(api_path, note).then(function(response) {
+            fulfill(response.data);
+          }).catch(function(response) {
+            $log.error('Problem with creating the note');
+            reject(response);
+          })
+        })
       }
     }
   };

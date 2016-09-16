@@ -17,7 +17,7 @@
       'resolve': {
         notes: function(notesService) {
           return notesService.list().then(function(response) {
-            return response.data.objects;
+            return response.objects;
           }).catch(function(response) {
             console.error('Error when loading notes');
           });
