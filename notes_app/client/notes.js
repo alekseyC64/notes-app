@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  angular.module('notes', ['ui.router']);
+  angular.module('notes', ['ui.router', 'ui.select', 'ngSanitize']);
 
   config.$inject = ['$stateProvider', '$urlRouterProvider'];
   function config($stateProvider, $urlRouterProvider) {

@@ -1,9 +1,18 @@
 (function() {
   'use strict';
 
-  NoteAddFormCtrl.$inject = ['notesService'];
-  function NoteAddFormCtrl(notesService) {
+  NoteAddFormCtrl.$inject = ['notesService', 'userService'];
+  function NoteAddFormCtrl(notesService, userService) {
+    var self = this;
     this.note = {};
+    this.users = [];
+
+    userService.list().then(function(response) {
+      self.users = response.objects;
+    }).catch(function(response) {
+      console.log('Error accessing user data');
+    });
+
     this.submit = function() {
       notesService.create(this.note);
     };

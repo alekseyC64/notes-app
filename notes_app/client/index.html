@@ -13,15 +13,20 @@
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
       integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
       crossorigin="anonymous">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.19.4/select.css">
   </head>
   <body ng-app="notes">
     <div class="container" ui-view></div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.19.4/select.js"></script>
     <script src="notes.js"></script>
     <script src="app/notes/note.component.js"></script>
     <script src="app/notes/note_add_form.component.js"></script>
     <script src="app/notes/notes_list.component.js"></script>
     <script src="app/notes/notes_service.js"></script>
+    <script src="app/users/user_service.js"></script>
   </body>
 </html>
