@@ -4,6 +4,7 @@ from tastypie.authorization import Authorization
 from tastypie.authentication import BasicAuthentication
 from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource
+from tastypie.validation import Validation
 from tastypie import fields
 from notes.models import Note
 
@@ -77,6 +78,16 @@ class UserAuthorization(Authorization):
         return bundle.obj.user == bundle.request.user
 
 
+class NoteValidation(Validation):
+    def is_valid(self, bundle, request=None):
+        errors = {}
+        if len(bundle.data[u'title']) == 0:
+            errors['title'] = 'Note title is empty'
+        if len(bundle.data[u'content']) == 0:
+            errors['content'] = 'Note content is empty'
+        return errors
+
+
 # to POST User use this JSON or modify for others requests (PUT, PATCH)
 # {
 #     "email": "user@email.com",
@@ -112,3 +123,4 @@ class NoteResource(ModelResource):
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'patch']
         authentication = BasicAuthentication()
+        validation = NoteValidation()

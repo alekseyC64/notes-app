@@ -28,6 +28,16 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
             u'content': u'Some content',
             u'owner': self.api_user_id
         }
+        self.post_data_empty_title = {
+            u'title': u'',
+            u'content': u'This note has no title',
+            u'owner': self.api_user_id
+        }
+        self.post_data_empty_content = {
+            u'title': u'This note has no content',
+            u'content': u'',
+            u'owner': self.api_user_id
+        }
 
     def get_credentials(self):
         return self.create_basic(
@@ -114,6 +124,23 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
             authentication=self.get_credentials()))
         self.assertEqual(Note.objects.filter(
             owner=self.user).count(), owned_count+1)
+
+    def test_post_list_empty_fields(self):
+        """Authenticated user shouldn't be able to add notes with empty \
+        title or content"""
+        owned_count = Note.objects.filter(owner=self.user).count()
+        self.assertHttpBadRequest(self.api_client.post(
+            self.api_list,
+            format='json',
+            data=self.post_data_empty_title,
+            authentication=self.get_credentials()))
+        self.assertHttpBadRequest(self.api_client.post(
+            self.api_list,
+            format='json',
+            data=self.post_data_empty_content,
+            authentication=self.get_credentials()))
+        self.assertEqual(Note.objects.filter(
+            owner=self.user).count(), owned_count)
 
     def test_put_detail_unauthenticated(self):
         """Unauthenticated user shouln't be able to update notes."""
