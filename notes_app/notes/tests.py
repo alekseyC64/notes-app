@@ -211,6 +211,18 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
             Note.objects.filter(owner=self.user).count(),
             owned_count)
 
+    def test_patch_detail_unauthorized(self):
+        """Authenticated user shouldn't be able to update notes belonging
+            to other users"""
+        self.assertHttpUnauthorized(self.api_client.patch(
+            self.api_detail_shared, format='json',
+            data=self.post_data_absent_title,
+            authentication=self.get_credentials()))
+        self.assertHttpUnauthorized(self.api_client.patch(
+            self.api_detail_not_shared, format='json',
+            data=self.post_data_absent_title,
+            authentication=self.get_credentials()))
+
     def test_delete_detail(self):
         """Delete HTTP request is not allowed regardless of user status."""
         self.assertHttpMethodNotAllowed(self.api_client.delete(
