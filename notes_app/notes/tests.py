@@ -40,12 +40,10 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
             'owner': self.api_user_id
         }
         self.post_data_absent_title = {
-            'content': 'The title of this note is absent',
-            'owner': self.api_user_id
+            'content': 'The title of this note is absent'
         }
         self.post_data_absent_content = {
-            'title': 'The content of this note is absent',
-            'owner': self.api_user_id
+            'title': 'The content of this note is absent'
         }
 
     def get_credentials(self):
@@ -61,6 +59,8 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
             self.api_detail, format='json'))
         self.assertHttpUnauthorized(self.api_client.post(
             self.api_list, format='json', data=self.post_data))
+        self.assertHttpUnauthorized(self.api_client.patch(
+            self.api_detail, format='json', data=self.post_data_absent_title))
         self.assertHttpUnauthorized(self.api_client.put(
             self.api_detail, format='json'))
 
@@ -180,6 +180,36 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
             owner=self.user).count(), owned_count)
         self.assertEqual(Note.objects.get(pk=1).title, new_title)
         self.assertEqual(Note.objects.get(pk=1).content, new_content)
+
+    def test_patch_detail(self):
+        """Authenticated user should be able to update notes owned by them
+            via a PATCH request"""
+        owned_count = Note.objects.filter(owner=self.user).count()
+        original_data = self.deserialize(self.api_client.get(
+            self.api_detail, format='json',
+            authentication=self.get_credentials()))
+
+        self.assertHttpAccepted(self.api_client.patch(
+            self.api_detail, format='json', data=self.post_data_absent_title,
+            authentication=self.get_credentials()))
+        self.assertEqual(Note.objects.get(pk=1).title, original_data['title'])
+        self.assertEqual(
+            Note.objects.get(pk=1).content,
+            self.post_data_absent_title['content'])
+
+        self.assertHttpAccepted(self.api_client.patch(
+            self.api_detail, data=self.post_data_absent_content,
+            format='json', authentication=self.get_credentials()))
+        self.assertEqual(
+            Note.objects.get(pk=1).title,
+            self.post_data_absent_content['title'])
+        self.assertEqual(
+            Note.objects.get(pk=1).content,
+            self.post_data_absent_title['content'])
+
+        self.assertEqual(
+            Note.objects.filter(owner=self.user).count(),
+            owned_count)
 
     def test_delete_detail(self):
         """Delete HTTP request is not allowed regardless of user status."""
