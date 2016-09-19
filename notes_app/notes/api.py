@@ -81,10 +81,10 @@ class UserAuthorization(Authorization):
 class NoteValidation(Validation):
     def is_valid(self, bundle, request=None):
         errors = {}
-        if len(bundle.data[u'title']) == 0:
-            errors['title'] = 'Note title is empty'
-        if len(bundle.data[u'content']) == 0:
-            errors['content'] = 'Note content is empty'
+        if not bundle.data.get('title'):
+            errors['title'] = 'Note title is empty/absent'
+        if not bundle.data.get('content'):
+            errors['content'] = 'Note content is empty/absent'
         return errors
 
 
