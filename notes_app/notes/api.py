@@ -10,6 +10,7 @@ from notes.models import Note
 
 
 class NoteAuthorization(Authorization):
+
     # READ notes
     def read_list(self, object_list, bundle):
         if bundle.request.user.is_authenticated():
@@ -75,7 +76,10 @@ class UserAuthorization(Authorization):
         return bundle.obj.user == bundle.request.user
 
     def delete_detail(self, object_list, bundle):
-        return bundle.obj.user == bundle.request.user
+        if bundle.obj.id == bundle.request.user.id:
+            return True
+        else:
+            raise Unauthorized('Not yours data')
 
 
 class NoteValidation(Validation):
@@ -105,9 +109,9 @@ class UserResource(ModelResource):
         queryset = User.objects.all()
         resource_name = 'user'
         list_allowed_methods = ['get', 'post']
-        detail_allowed_methods = ['get', 'put', 'patch']
+        detail_allowed_methods = ['get', 'put', 'patch', 'delete']
         authentication = BasicAuthentication()
-        authorization = Authorization()
+        authorization = UserAuthorization()
 
 
 class NoteResource(ModelResource):
