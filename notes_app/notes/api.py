@@ -73,7 +73,7 @@ class UserAuthorization(Authorization):
         return True
 
     def update_detail(self, object_list, bundle):
-        return bundle.obj.user == bundle.request.user
+        return bundle.obj.id == bundle.request.user.id
 
     def delete_detail(self, object_list, bundle):
         if bundle.obj.id == bundle.request.user.id:
