@@ -96,7 +96,7 @@ class UserResource(ModelResource):
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'patch']
         authentication = BasicAuthentication()
-        authorization = Authorization()
+        authorization = UserAuthorization()
 
 
 class NoteResource(ModelResource):

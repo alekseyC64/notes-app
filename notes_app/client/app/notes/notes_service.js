@@ -27,11 +27,11 @@
       'create': function(note) {
         return $http.post(api_path, note).then(
           function successHandler(response) {
-            return response.data;
+            return true;
           }
         ).catch(function errorHandler(response) {
           $log.error('Problem with creating the note');
-          return null;
+          return false;
         })
       }
     }
