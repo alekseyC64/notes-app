@@ -34,16 +34,10 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             'last_name': 'testPatch'
         }
 
-    def get_credentials(self):
+    def get_credentials(self, username='admin', password='admin13'):
         return self.create_basic(
-            username=self.user.username,
-            password=self.password)
-
-    def get_wrong_credentials(self):
-        return self.create_basic(
-            username=self.user.username,
-            password='111'
-        )
+            username=username,
+            password=password)
 
     # Test List
     def test_get_list_json(self):
@@ -71,17 +65,19 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
                 authentication=self.get_credentials()
             )
         )
+        new_user = User.objects.get(first_name=self.post_data['first_name'], email=self.post_data['email'])
+        new_user.set_password(self.post_data['password'])
+        new_user.save()
         users_after = User.objects.all().count()
         self.assertEqual((users_before + 1), users_after)
 
         # delete
-        new_user = User.objects.get(first_name='test', email='test@email.com')
         self.assertEqual(User.objects.count(), users_after)
         self.assertHttpAccepted(
             self.api_client.delete(
                 '/api/v1/user/{0}/'.format(new_user.id),
                 format='json',
-                authentication=self.get_credentials()
+                authentication=self.get_credentials(self.post_data['username'], self.post_data['password'])
             )
         )
         self.assertEqual(User.objects.count(), users_before)
