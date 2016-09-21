@@ -10,7 +10,7 @@
           return response.data;
         }).catch(function errorHandler(response) {
           $log.error('Problem with fetching data from server');
-          return {};
+          return [];
         });
       }
     }

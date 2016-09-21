@@ -10,8 +10,8 @@
         return $http.get(api_path).then(function successHandler(response) {
           return response.data;
         }).catch(function errorHandler(response) {
-          $log.error('Problem with getting the user list from server')
-          return {};
+          $log.error('Problem with getting the note list from server')
+          return [];
         });
       },
       'read': function(id) {
@@ -20,8 +20,8 @@
             return response.data;
           }
         ).catch(function errorHandler(response) {
-          $log.error('Problem with getting the user from server');
-          return {};
+          $log.error('Problem with getting the note from server');
+          return null;
         });
       },
       'create': function(note) {
@@ -30,8 +30,8 @@
             return response.data;
           }
         ).catch(function errorHandler(response) {
-          $log.error('Problem with creating the user');
-          return {};
+          $log.error('Problem with creating the note');
+          return null;
         })
       }
     }

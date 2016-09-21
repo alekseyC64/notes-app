@@ -11,7 +11,7 @@
           case 'success':
             return 'alert-success'
           case 'error':
-            return 'alert-error'
+            return 'alert-danger'
           case 'warning':
             return 'alert-warning'
           default:

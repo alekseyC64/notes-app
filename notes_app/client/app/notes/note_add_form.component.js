@@ -24,11 +24,18 @@
     this.submit = function() {
       self.locked = true;
       notesService.create(this.note).then(function(response) {
-        self.alert_state.visible = true;
-        self.alert_state.message = 'Note successfully added.'
-        self.alert_state.severity = 'success';
-        self.form.$setPristine();
-        self.reset();
+        if (response) {
+          self.alert_state.visible = true;
+          self.alert_state.message = 'Note successfully added.';
+          self.alert_state.severity = 'success';
+          self.form.$setPristine();
+          self.reset();
+        } else {
+          self.alert_state.visible = true;
+          self.alert_state.message = 'Problem with creating the note';
+          self.alert_state.severity = 'error';
+          self.locked = false;
+        }
       });
     };
   };
