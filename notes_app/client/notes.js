@@ -16,11 +16,7 @@
       'template': '<notes-list notes="$resolve.notes"></notes-list>',
       'resolve': {
         notes: function(notesService) {
-          return notesService.list().then(function(response) {
-            return response.data.objects;
-          }).catch(function(response) {
-            console.error('Error when loading notes');
-          });
+          return notesService.list();
         }
       }
     }).state({

@@ -2,13 +2,12 @@
   'use strict';
 
   angular.module('notes').component('alert', {
-    'template': '<div class="alert" ng-show="$ctrl.message" ng-bind="$ctrl.message" ng-class="$ctrl.getClass()"></div>',
+    'template': '<div class="alert" ng-show="$ctrl.state.visible" \
+    ng-bind="$ctrl.state.message" ng-class="$ctrl.getSeverity()"></div>',
     'controller': function() {
       var self = this;
-      this.class = 'info';
-      this.message = '';
-      this.getClass = function() {
-        switch (self.message) {
+      this.getSeverity = function() {
+        switch (self.state.severity) {
           case 'success':
             return 'alert-success'
           case 'error':
@@ -21,8 +20,7 @@
       }
     },
     'bindings': {
-      'message': '<',
-      'class': '<'
+      'state': '<'
     }
   });
 })();

@@ -6,13 +6,11 @@
     var api_path = 'http://localhost:8000/api/v1/user/';
     return {
       'list': function() {
-        return new Promise(function(fulfill, reject) {
-          $http.get(api_path).then(function(response) {
-            fulfill(response.data);
-          }).catch(function(response) {
-            $log.error('Problem with fetching data from server');
-            reject(response);
-          });
+        return $http.get(api_path).then(function successHandler(response) {
+          return response.data;
+        }).catch(function errorHandler(response) {
+          $log.error('Problem with fetching data from server');
+          return {};
         });
       }
     }

@@ -1,5 +1,5 @@
 <h2>Add Note</h2>
-<alert message="$ctrl.message"></alert>
+<alert state="$ctrl.alert_state"></alert>
 <form name="$ctrl.form" novalidate ng-submit="$ctrl.submit()">
   <div class="form-group" ng-class="{'has-success': $ctrl.form.title.$valid,
     'has-error': $ctrl.form.title.$dirty && $ctrl.form.title.$invalid}">

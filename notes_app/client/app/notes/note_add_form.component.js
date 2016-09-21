@@ -6,6 +6,7 @@
     var self = this;
     this.note = {};
     this.users = [];
+    this.alert_state = {};
     this.locked = false;
 
     userService.list().then(function(response) {
@@ -23,12 +24,11 @@
     this.submit = function() {
       self.locked = true;
       notesService.create(this.note).then(function(response) {
-        self.message = 'Note added successfully!';
+        self.alert_state.visible = true;
+        self.alert_state.message = 'Note successfully added.'
+        self.alert_state.severity = 'success';
         self.form.$setPristine();
         self.reset();
-      }).catch(function(response) {
-        self.message = 'Problem communicating with server.';
-        self.locked = false;
       });
     };
   };
