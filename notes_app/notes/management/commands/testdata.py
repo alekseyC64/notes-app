@@ -39,19 +39,27 @@ class Command(BaseCommand):
     help = 'Generates test data for the application'
 
     def add_arguments(self, parser):
-        parser.add_argument('user_count', type=int)
-        parser.add_argument('note_count', type=int)
+        parser.add_argument(
+            '-u', '--usercount', type=int,
+            help='number of users to generate')
+        parser.add_argument(
+            '-n', '--notecount', type=int,
+            help='number of notes to put into the database')
 
     def handle(self, *args, **options):
-        if options.get('user_count') <= 0:
-            raise CommandError('the number of users to generate must be > 0')
-        if options.get('note_count') <= 0:
-            raise CommandError('the number of notes to generate must be > 0')
-
-        gen_random_users(options['user_count'])
-        self.stdout.write('Generated {} user(s)'.format(
-            options['user_count']))
-
-        gen_random_notes(options['note_count'])
-        self.stdout.write('Generated {} note(s)'.format(
-            options['note_count']))
+        user_count = options.get('usercount')
+        note_count = options.get('notecount')
+        if user_count:
+            if user_count < 0:
+                raise CommandError('the number of users can\'t be negative')
+            else:
+                gen_random_users(user_count)
+                self.stdout.write('Generated {} user(s)'.format(user_count))
+        if note_count:
+            if note_count < 0:
+                raise CommandError('the number of notes can\'t be negative')
+            else:
+                gen_random_notes(note_count)
+                self.stdout.write('Generated {} note(s)'.format(note_count))
+        if not (user_count or note_count):
+            self.stdout.write('No arguments passed. Use -h to get help.')
