@@ -1,0 +1,32 @@
+<h2>Add Note</h2>
+<alert state="$ctrl.alert_state"></alert>
+<form name="$ctrl.form" novalidate ng-submit="$ctrl.submit()">
+  <div class="form-group" ng-class="{'has-success': $ctrl.form.title.$valid,
+    'has-error': $ctrl.form.title.$dirty && $ctrl.form.title.$invalid}">
+    <label class="control-label" for="title">Title</label>
+    <input type="text" id="title" name="title" class="form-control"
+      placeholder="Note Title" ng-model="$ctrl.note.title" required>
+  </div>
+  <div class="form-group" ng-class="{'has-success': $ctrl.form.content.$valid,
+    'has-error': $ctrl.form.content.$dirty && $ctrl.form.content.$invalid}">
+    <label class="control-label" for="content">Content</label>
+    <textarea id="content" class="form-control" ng-model="$ctrl.note.content"
+      required placeholder="Note Content" name="content">
+    </textarea>
+  </div>
+  <div class="form-group">
+    <label class="control-label">Sharing with</label>
+    <ui-select ng-model="$ctrl.note.shared_with" multiple>
+      <ui-select-match placeholder="Select users to share the note with">
+        {{$item.first_name}}&nbsp;{{$item.last_name}}
+      </ui-select-match>
+      <ui-select-choices repeat="user in ($ctrl.users| filter: $select.search) track by user.id">
+        <span>{{user.first_name}}&nbsp;{{user.last_name}}</span>
+      </ui-select-choices>
+    </ui-select>
+  </div>
+  <div class="form-group">
+    <input type="submit" class="btn btn-default" value="Add"
+      ng-disabled="$ctrl.form.$pristine || $ctrl.form.$invalid || $ctrl.locked">
+  </div>
+</form>

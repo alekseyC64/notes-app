@@ -128,3 +128,7 @@ class NoteResource(ModelResource):
         detail_allowed_methods = ['get', 'put', 'patch']
         authentication = BasicAuthentication()
         validation = NoteValidation()
+
+    def hydrate(self, bundle):
+        bundle.obj.owner = bundle.request.user
+        return bundle

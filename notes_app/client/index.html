@@ -2,23 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notes</title>
     <link rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
       integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
       crossorigin="anonymous">
     <link rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" 
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
       integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
       crossorigin="anonymous">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.19.4/select.css">
   </head>
   <body ng-app="notes">
     <div class="container" ui-view></div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.19.4/select.js"></script>
     <script src="notes.js"></script>
     <script src="app/notes/note.component.js"></script>
+    <script src="app/notes/alert.component.js"></script>
+    <script src="app/notes/note_add_form.component.js"></script>
     <script src="app/notes/notes_list.component.js"></script>
     <script src="app/notes/notes_service.js"></script>
+    <script src="app/users/user_service.js"></script>
   </body>
 </html>
