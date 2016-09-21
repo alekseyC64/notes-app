@@ -14,6 +14,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.generic import RedirectView
 from tastypie.api import Api
 from notes.api import NoteResource, UserResource
 
@@ -26,4 +27,5 @@ v1_api.register(UserResource())
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
+    url(r'^$', RedirectView.as_view(url='static/index.html'), name='index')
 ]

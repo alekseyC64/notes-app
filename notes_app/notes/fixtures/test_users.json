@@ -1,0 +1,47 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "email": "yauheni.epam@gmail.com",
+      "first_name": "John",
+      "id": 1,
+      "is_active": true,
+      "is_staff": true,
+      "is_superuser": true,
+      "last_name": "Doe",
+      "password": "pbkdf2_sha256$20000$rdM0SS5EzRc0$s/v3g7yFM4IjWe+mk+XUmJ4+Kp/C0grcxiJMNqfFRbA=",
+      "username": "admin"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "email": "iggypop@email.com",
+      "first_name": "Iggy",
+      "id": 2,
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "last_name": "Poppy",
+      "password": "pbkdf2_sha256$20000$HP7IsT1xOSuc$1A0vtbSaVGzILgvqp0tiWb4tNlnErS9Ld/fCXZ2JCig=",
+      "username": "iggy"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "email": "robby@gmail.com",
+      "first_name": "Robby",
+      "id": 3,
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "last_name": "Roe",
+      "password": "pbkdf2_sha256$20000$OWKSC2iaZkxp$goEtCYZFC6CEIJzRWQ5nbo1iL7GrYWbQTytWbKkOvWg=",
+      "username": "rob"
+    }
+  }
+]

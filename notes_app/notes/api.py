@@ -4,11 +4,13 @@ from tastypie.authorization import Authorization
 from tastypie.authentication import BasicAuthentication
 from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource
+from tastypie.validation import Validation
 from tastypie import fields
 from notes.models import Note
 
 
 class NoteAuthorization(Authorization):
+
     # READ notes
     def read_list(self, object_list, bundle):
         if bundle.request.user.is_authenticated():
@@ -74,7 +76,20 @@ class UserAuthorization(Authorization):
         return bundle.obj.user == bundle.request.user
 
     def delete_detail(self, object_list, bundle):
-        return bundle.obj.user == bundle.request.user
+        if bundle.obj.id == bundle.request.user.id:
+            return True
+        else:
+            raise Unauthorized('Not yours data')
+
+
+class NoteValidation(Validation):
+    def is_valid(self, bundle, request=None):
+        errors = {}
+        if not bundle.data.get('title'):
+            errors['title'] = 'Note title is empty/absent'
+        if not bundle.data.get('content'):
+            errors['content'] = 'Note content is empty/absent'
+        return errors
 
 
 # to POST User use this JSON or modify for others requests (PUT, PATCH)
@@ -94,9 +109,9 @@ class UserResource(ModelResource):
         queryset = User.objects.all()
         resource_name = 'user'
         list_allowed_methods = ['get', 'post']
-        detail_allowed_methods = ['get', 'put', 'patch']
+        detail_allowed_methods = ['get', 'put', 'patch', 'delete']
         authentication = BasicAuthentication()
-        authorization = Authorization()
+        authorization = UserAuthorization()
 
 
 class NoteResource(ModelResource):
@@ -112,6 +127,7 @@ class NoteResource(ModelResource):
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'patch']
         authentication = BasicAuthentication()
+        validation = NoteValidation()
 
     def hydrate(self, bundle):
         bundle.obj.owner = bundle.request.user
