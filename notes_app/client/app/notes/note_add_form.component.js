@@ -24,7 +24,8 @@
     this.submit = function() {
       self.locked = true;
       notesService.create(this.note).then(function(response) {
-        if (response) {
+        console.log(response);
+        if (response !== null) {
           self.alert_state.visible = true;
           self.alert_state.message = 'Note successfully added.';
           self.alert_state.severity = 'success';

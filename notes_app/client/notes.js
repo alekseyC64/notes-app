@@ -16,7 +16,9 @@
       'template': '<notes-list notes="$resolve.notes"></notes-list>',
       'resolve': {
         notes: function(notesService) {
-          return notesService.list();
+          return notesService.list().then(function(response) {
+            return response.objects;
+          });
         }
       }
     }).state({
