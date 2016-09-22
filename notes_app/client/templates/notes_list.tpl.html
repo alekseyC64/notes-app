@@ -1,3 +1,13 @@
 <div class="row">
   <note class="col-md-4" ng-repeat="note in $ctrl.notes" note="note">
 </div>
+<div class="row">
+  <div class="col-xs-12">
+    <nav class="text-center">
+      <ul uib-pagination total-items="$ctrl.metadata.total_count"
+        max-size="10" force-ellipses="true" items-per-page="$ctrl.noteLimit"
+        boundary-links="true" ng-model="$ctrl.currentPage"
+        ng-change="$ctrl.update()"></ul>
+    </nav>
+  </div>
+</div>
