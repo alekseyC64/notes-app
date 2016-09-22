@@ -1,7 +1,12 @@
 (function() {
   'use strict';
 
-  angular.module('notes', ['ui.router', 'ui.select', 'ngSanitize']);
+  angular.module('notes', [
+    'ui.router',
+    'ui.select',
+    'ui.bootstrap',
+    'ngSanitize'
+  ]);
 
   config.$inject = ['$stateProvider', '$urlRouterProvider'];
   function config($stateProvider, $urlRouterProvider) {
@@ -13,14 +18,7 @@
     }).state({
       'name': 'note.list',
       'url': '',
-      'template': '<notes-list notes="$resolve.notes"></notes-list>',
-      'resolve': {
-        notes: function(notesService) {
-          return notesService.list().then(function(response) {
-            return response.objects;
-          });
-        }
-      }
+      'template': '<notes-list></notes-list>'      
     }).state({
       'name': 'note.add',
       'url': '/add',
