@@ -1,9 +1,13 @@
 from django.db.models import Q
+from django.conf.urls import url
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from tastypie.authorization import Authorization
-from tastypie.authentication import BasicAuthentication
+from tastypie.authentication import SessionAuthentication
 from tastypie.exceptions import Unauthorized
+from tastypie.http import HttpForbidden, HttpUnauthorized
 from tastypie.resources import ModelResource
+from tastypie.utils import trailing_slash
 from tastypie.validation import Validation
 from tastypie import fields
 from notes.models import Note
@@ -110,8 +114,61 @@ class UserResource(ModelResource):
         resource_name = 'user'
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'patch', 'delete']
-        authentication = BasicAuthentication()
+        authentication = SessionAuthentication()
         authorization = UserAuthorization()
+
+    def prepend_urls(self):
+        return [
+            url(
+                r'{}/login{}$'.format(
+                    self._meta.resource_name,
+                    trailing_slash()),
+                self.wrap_view('login'), name='login'
+            ),
+            url(
+                r'{}/logout{}$'.format(
+                    self._meta.resource_name,
+                    trailing_slash()),
+                self.wrap_view('logout'), name='logout'
+            ),
+        ]
+
+    def login(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        credentials = self.deserialize(
+            request, request.body,
+            format=request.META.get('CONTENT_TYPE', 'application/json')
+        )
+        username = credentials.get('username', '')
+        password = credentials.get('password', '')
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return self.create_response(request, {
+                    'success': True
+                })
+            else:
+                return self.create_response(request, {
+                    'success': False,
+                    'error': 'User account is disabled'
+                }, HttpForbidden)
+        else:
+            return self.create_response(request, {
+                'success': False,
+                'error': 'Wrong username or password'
+            }, HttpUnauthorized)
+
+    def logout(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        if request.user and request.user.is_authenticated:
+            logout(request)
+            return self.create_response(request, {'success': True})
+        else:
+            return self.create_response(request, {
+                'success': False
+            }, HttpUnauthorized)
 
 
 class NoteResource(ModelResource):
@@ -126,7 +183,7 @@ class NoteResource(ModelResource):
         authorization = NoteAuthorization()
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'patch']
-        authentication = BasicAuthentication()
+        authentication = SessionAuthentication()
         validation = NoteValidation()
 
     def hydrate(self, bundle):

@@ -14,11 +14,23 @@
       'name': 'note',
       'url': '/note',
       'abstract': true,
-      'templateUrl': 'templates/notes.tpl.html'
+      'templateUrl': 'templates/notes.tpl.html',
+      'controller': function($uibModal, userService) {
+        var self = this;
+        self.openLoginModal = function() {
+          $uibModal.open({
+            'component': 'login'
+          })
+        };
+        self.logout = function() {
+          userService.logout();
+        };
+      },
+      'controllerAs': '$ctrl'
     }).state({
       'name': 'note.list',
       'url': '',
-      'template': '<notes-list></notes-list>'      
+      'template': '<notes-list></notes-list>'
     }).state({
       'name': 'note.add',
       'url': '/add',

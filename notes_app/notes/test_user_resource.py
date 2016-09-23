@@ -39,13 +39,16 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             username=username,
             password=password)
 
+    def setup_session(self, username='admin', password='admin13'):
+        self.api_client.client.login(username=username, password=password)
+
     # Test List
     def test_get_list_json(self):
         """Authenticated User should get back a list of users."""
+        self.setup_session()
         resp = self.api_client.get(
             self.api_list,
             format='json',
-            authentication=self.get_credentials()
         )
         total_count = User.objects.all().count()
         self.assertValidJSONResponse(resp)
@@ -54,6 +57,7 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
 
     def test_post_list_and_delete_detail(self):
         """Authorized Users can POST list and DELETE detail"""
+        self.setup_session()
         users_before = User.objects.all().count()
 
         # create
@@ -62,7 +66,6 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
                 self.api_list,
                 format='json',
                 data=self.post_data,
-                authentication=self.get_credentials()
             )
         )
         new_user = User.objects.get(first_name=self.post_data['first_name'], email=self.post_data['email'])
@@ -72,19 +75,19 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
         self.assertEqual((users_before + 1), users_after)
 
         # delete
+        self.setup_session(self.post_data['username'], self.post_data['password'])
         self.assertEqual(User.objects.count(), users_after)
         self.assertHttpAccepted(
             self.api_client.delete(
                 '/api/v1/user/{0}/'.format(new_user.id),
-                format='json',
-                authentication=self.get_credentials(self.post_data['username'], self.post_data['password'])
-            )
+                format='json')
         )
         self.assertEqual(User.objects.count(), users_before)
 
     def test_delete_another_detail(self):
         """Users can't DELETE another users"""
         # create
+        self.setup_session(username='iggy', password='iggy')
         self.assertHttpCreated(
             self.api_client.post(
                 self.api_list,
@@ -98,8 +101,7 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
                     'last_name': 'test',
                     'password': 'test',
                     'username': 'test'
-                },
-                authentication=self.create_basic(username='iggy', password='iggy')
+                }
             )
         )
 
@@ -108,17 +110,17 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
         self.assertHttpUnauthorized(
             self.api_client.delete(
                 '/api/v1/user/{0}/'.format(new_user.id),
-                format='json',
-                authentication=self.create_basic(username='iggy', password='iggy'))
+                format='json'
+            )
         )
 
     # Test Detail
     def test_get_detail_json(self):
         """Authorized Users should get back a valid json of a user"""
+        self.setup_session()
         resp = self.api_client.get(
             self.api_detail,
-            format='json',
-            authentication=self.get_credentials()
+            format='json'
         )
         user = User.objects.get(id=self.api_user_id)
         self.assertValidJSONResponse(resp)
@@ -127,11 +129,11 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
 
     def test_put_detail(self):
         """Authorized User can PUT"""
+        self.setup_session()
         original_data = self.deserialize(
             self.api_client.get(
                 self.api_detail,
-                format='json',
-                authentication=self.get_credentials()
+                format='json'
             )
         )
         new_data = original_data.copy()
@@ -144,8 +146,7 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             self.api_client.put(
                 self.api_detail,
                 format='json',
-                data=new_data,
-                authentication=self.get_credentials()
+                data=new_data
             )
         )
         self.assertEqual(User.objects.count(), total_count)
@@ -154,11 +155,11 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
 
     def test_patch_detail(self):
         """Authorized User can PATCH"""
+        self.setup_session()
         resp = self.api_client.put(
             self.api_detail,
             format='json',
-            data=self.patch_data,
-            authentication=self.get_credentials()
+            data=self.patch_data
         )
         self.assertHttpAccepted(resp)
         self.assertEqual(User.objects.get(id=self.api_user_id).last_name, 'testPatch')
@@ -176,13 +177,13 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
     # 405 Method Not Allowed
     def test_not_allowed(self):
         """Users can't PUT PATCH DELETE list & POST detail"""
+        self.setup_session()
         # PUT list
         self.assertHttpMethodNotAllowed(
             self.api_client.put(
                 self.api_list,
                 format='json',
-                data=self.put_data,
-                authentication=self.get_credentials()
+                data=self.put_data
             )
         )
         # PATCH list
@@ -190,15 +191,13 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             self.api_client.patch(
                 self.api_list,
                 format='json',
-                data=self.patch_data,
-                authentication=self.get_credentials()
+                data=self.patch_data
             )
         )
         # DELETE list
         self.assertHttpMethodNotAllowed(
             self.api_client.delete(
-                self.api_list,
-                authentication=self.get_credentials()
+                self.api_list
             )
         )
         # POST detail
@@ -206,7 +205,6 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             self.api_client.post(
                 self.api_detail,
                 format='json',
-                data=self.post_data,
-                authentication=self.get_credentials()
+                data=self.post_data
             )
         )
