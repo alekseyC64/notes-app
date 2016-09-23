@@ -8,8 +8,11 @@
     'ngSanitize'
   ]);
 
-  config.$inject = ['$stateProvider', '$urlRouterProvider'];
-  function config($stateProvider, $urlRouterProvider) {
+  config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
+  function config($stateProvider, $urlRouterProvider, $httpProvider) {
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+
     $stateProvider.state({
       'name': 'note',
       'url': '/note',
