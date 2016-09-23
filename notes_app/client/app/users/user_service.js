@@ -13,6 +13,11 @@
           return [];
         });
       },
+      'register': function(username, password) {
+          console.log('Not implemented');
+          console.log('Username:', username);
+          console.log('Password:', password);
+      },
       'login': function(username, password) {
         var data = {'username': username, 'password': password};
         return $http.post(api_path+'login/', data).then(function(response) {

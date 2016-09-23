@@ -43,5 +43,20 @@
       "password": "pbkdf2_sha256$20000$OWKSC2iaZkxp$goEtCYZFC6CEIJzRWQ5nbo1iL7GrYWbQTytWbKkOvWg=",
       "username": "rob"
     }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "email": "bigboss@apple.com",
+      "first_name": "Steve",
+      "id": 4,
+      "is_active": false,
+      "is_staff": false,
+      "is_superuser": false,
+      "last_name": "Jobs",
+      "password": "pbkdf2_sha256$20000$rdM0SS5EzRc0$s/v3g7yFM4IjWe+mk+XUmJ4+Kp/C0grcxiJMNqfFRbA=",
+      "username": "steve"
+    }
   }
 ]
