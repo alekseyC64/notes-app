@@ -12,6 +12,21 @@
           $log.error('Problem with fetching data from server');
           return [];
         });
+      },
+      'login': function(username, password) {
+        var data = {'username': username, 'password': password};
+        return $http.post(api_path+'login/', data).then(function(response) {
+          return response.data;
+        }).catch(function(response) {
+          return response.data;
+        })
+      },
+      'logout': function() {
+        return $http.post(api_path+'logout/').then(function(response) {
+          return response.data;
+        }).catch(function(response) {
+          return response.data;
+        })
       }
     }
   };

@@ -8,17 +8,32 @@
     'ngSanitize'
   ]);
 
-  config.$inject = ['$stateProvider', '$urlRouterProvider'];
-  function config($stateProvider, $urlRouterProvider) {
+  config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
+  function config($stateProvider, $urlRouterProvider, $httpProvider) {
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+
     $stateProvider.state({
       'name': 'note',
       'url': '/note',
       'abstract': true,
-      'templateUrl': 'templates/notes.tpl.html'
+      'templateUrl': 'templates/notes.tpl.html',
+      'controller': function($uibModal, userService) {
+        var self = this;
+        self.openLoginModal = function() {
+          $uibModal.open({
+            'component': 'login'
+          })
+        };
+        self.logout = function() {
+          userService.logout();
+        };
+      },
+      'controllerAs': '$ctrl'
     }).state({
       'name': 'note.list',
       'url': '',
-      'template': '<notes-list></notes-list>'      
+      'template': '<notes-list></notes-list>'
     }).state({
       'name': 'note.add',
       'url': '/add',
