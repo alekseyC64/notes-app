@@ -239,3 +239,13 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
         self.assertHttpForbidden(response)
         self.assertEqual(self.deserialize(response)['success'], False)
         self.assertIn('error', self.deserialize(response))
+
+    def test_logout(self):
+        self.setup_session()
+        response = self.api_client.post(self.api_logout)
+        self.assertHttpOK(response)
+        self.assertEqual(
+            self.deserialize(response)['success'], True)
+        response = self.api_client.post(self.api_logout)
+        self.assertHttpUnauthorized(response)
+        self.assertEqual(self.deserialize(response)['success'], False)
