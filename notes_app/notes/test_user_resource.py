@@ -16,6 +16,8 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
 
         self.api_list = '/api/v1/user/'
         self.api_detail = '/api/v1/user/1/'
+        self.api_login = '/api/v1/user/login/'
+        self.api_logout = '/api/v1/user/logout/'
         self.api_user_id = '1'
         self.post_data = {
             'email': 'test@email.com',
@@ -208,3 +210,32 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
                 data=self.post_data
             )
         )
+
+    def test__login_correct_credentials(self):
+        response = self.api_client.post(
+            self.api_login,
+            format='json',
+            data={'username': self.username, 'password': self.password}
+        )
+        self.assertHttpOK(response)
+        self.assertEqual(self.deserialize(response)['success'], True)
+
+    def test_login_wrong_credentials(self):
+        response = self.api_client.post(
+                self.api_login,
+                format='json',
+                data={'username': self.username, 'password': 'wrong password'}
+        )
+        self.assertHttpUnauthorized(response)
+        self.assertEqual(self.deserialize(response)['success'], False)
+        self.assertIn('error', self.deserialize(response))
+
+    def test_login_disabled_user(self):
+        response = self.api_client.post(
+            self.api_login,
+            format='json',
+            data={'username': 'steve', 'password': self.password}
+        )
+        self.assertHttpForbidden(response)
+        self.assertEqual(self.deserialize(response)['success'], False)
+        self.assertIn('error', self.deserialize(response))
