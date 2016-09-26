@@ -152,17 +152,13 @@ class UserResource(ModelResource):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return self.create_response(request, {
-                    'success': True
-                })
+                return self.create_response(request, {})
             else:
                 return self.create_response(request, {
-                    'success': False,
                     'error': 'User account is disabled'
                 }, HttpForbidden)
         else:
             return self.create_response(request, {
-                'success': False,
                 'error': 'Wrong username or password'
             }, HttpUnauthorized)
 
@@ -176,33 +172,26 @@ class UserResource(ModelResource):
         password = credentials.get('password')
         if not username:
             return self.create_response(request, {
-                'success': False,
                 'error': 'No username in the request'
             }, HttpBadRequest)
         if not password:
             return self.create_response(request, {
-                'success': False,
                 'error': 'No password in the request'
             }, HttpBadRequest)
         if User.objects.filter(username=username).exists():
             return self.create_response(request, {
-                'success': False,
                 'error': 'User already exists'
             }, HttpForbidden)
         User.objects.create_user(username, password=password)
-        return self.create_response(request, {
-            'success': True
-        })
+        return self.create_response(request, {})
 
     def logout(self, request, **kwargs):
         self.method_check(request, allowed=['post'])
         if request.user and request.user.is_authenticated():
             logout(request)
-            return self.create_response(request, {'success': True})
+            return self.create_response(request, {})
         else:
-            return self.create_response(request, {
-                'success': False
-            }, HttpUnauthorized)
+            return self.create_response(request, {}, HttpUnauthorized)
 
 
 class NoteResource(ModelResource):
