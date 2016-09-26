@@ -25,6 +25,11 @@
             'component': 'login'
           })
         };
+        self.openRegistrationModal = function() {
+          $uibModal.open({
+            'component': 'registration'
+          })
+        }
         self.logout = function() {
           userService.logout();
         };

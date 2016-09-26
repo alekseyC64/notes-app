@@ -6,14 +6,13 @@
     ctrl.loginState = {};
     ctrl.attemptLogin = function(username, password) {
       userService.login(username, password).then(function(status) {
-        if (status.success) {
-          ctrl.success();
-        } else {
-          ctrl.loginState['visible'] = true;
-          ctrl.loginState['message'] = status.error;
-          ctrl.loginState['severity'] = 'error';
-        }
-      })
+        ctrl.loginState['visible'] = false;
+        ctrl.success();
+      }).catch(function(status) {
+        ctrl.loginState['visible'] = true;
+        ctrl.loginState['message'] = status.error;
+        ctrl.loginState['severity'] = 'error';
+      });
     };
     ctrl.success = function() {
       ctrl.close();

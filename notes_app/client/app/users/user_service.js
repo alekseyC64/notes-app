@@ -1,8 +1,8 @@
 (function() {
   'use strict';
 
-  userService.$inject = ['$http', '$log'];
-  function userService($http, $log) {
+  userService.$inject = ['$http', '$log', '$q'];
+  function userService($http, $log, $q) {
     var api_path = 'http://localhost:8000/api/v1/user/';
     return {
       'list': function() {
@@ -13,20 +13,28 @@
           return [];
         });
       },
+      'register': function(username, password) {
+        var data = {'username': username, 'password': password}
+        return $http.post(api_path+'register/', data).then(function(response) {
+          return;
+        }).catch(function(response) {
+          return $q.reject({
+            'error': response.data['error'] ? response.data['error'] : 'Server error'
+          })
+        });
+      },
       'login': function(username, password) {
         var data = {'username': username, 'password': password};
         return $http.post(api_path+'login/', data).then(function(response) {
-          return response.data;
+          return;
         }).catch(function(response) {
-          return response.data;
+          return $q.reject({
+            'error': response.data['error'] ? response.data['error'] : 'Server error'
+          });
         })
       },
       'logout': function() {
-        return $http.post(api_path+'logout/').then(function(response) {
-          return response.data;
-        }).catch(function(response) {
-          return response.data;
-        })
+        return $http.post(api_path+'logout/');
       }
     }
   };
