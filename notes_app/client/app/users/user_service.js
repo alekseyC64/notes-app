@@ -14,9 +14,12 @@
         });
       },
       'register': function(username, password) {
-          console.log('Not implemented');
-          console.log('Username:', username);
-          console.log('Password:', password);
+        var data = {'username': username, 'password': password}
+        return $http.post(api_path, data).then(function(response) {
+          return response.data;
+        }).catch(function(response) {
+          return response.data;
+        });
       },
       'login': function(username, password) {
         var data = {'username': username, 'password': password};
