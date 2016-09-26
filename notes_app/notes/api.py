@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from tastypie.authorization import Authorization
 from tastypie.authentication import SessionAuthentication
 from tastypie.exceptions import Unauthorized
-from tastypie.http import HttpForbidden, HttpUnauthorized
+from tastypie.http import HttpForbidden, HttpUnauthorized, HttpBadRequest
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
 from tastypie.validation import Validation
@@ -131,6 +131,12 @@ class UserResource(ModelResource):
                     trailing_slash()),
                 self.wrap_view('logout'), name='logout'
             ),
+            url(
+                r'{}/register{}$'.format(
+                    self._meta.resource_name,
+                    trailing_slash()),
+                self.wrap_view('register'), name='register'
+            ),
         ]
 
     def login(self, request, **kwargs):
@@ -159,6 +165,34 @@ class UserResource(ModelResource):
                 'success': False,
                 'error': 'Wrong username or password'
             }, HttpUnauthorized)
+
+    def register(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        credentials = self.deserialize(
+            request, request.body,
+            format=request.META.get('CONTENT_TYPE', 'application/json')
+        )
+        username = credentials.get('username')
+        password = credentials.get('password')
+        if not username:
+            return self.create_response(request, {
+                'success': False,
+                'error': 'No username in the request'
+            }, HttpBadRequest)
+        if not password:
+            return self.create_response(request, {
+                'success': False,
+                'error': 'No password in the request'
+            }, HttpBadRequest)
+        if User.objects.filter(username=username).exists():
+            return self.create_response(request, {
+                'success': False,
+                'error': 'User already exists'
+            }, HttpForbidden)
+        User.objects.create_user(username, password=password)
+        return self.create_response(request, {
+            'success': True
+        })
 
     def logout(self, request, **kwargs):
         self.method_check(request, allowed=['post'])
