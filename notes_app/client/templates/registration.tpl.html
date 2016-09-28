@@ -1,27 +1,34 @@
+<form name="registration">
 <div class="modal-header">
   <h2 class="modal-title">Register</h2>
 </div>
 <div class="modal-body" id="modal-body">
   <alert state="$ctrl.registrationState"></alert>
-  <div class="form-group">
-    <label for="username">Username</label>
+  <div class="form-group" ng-class="{'has-success': registration.username.$valid,
+    'has-error': registration.username.$dirty && registration.username.$invalid}">
+    <label class="control-label" for="username">Username</label>
     <input type="text" class="form-control" id="username" placeholder="Username"
-      ng-model="username">
+      ng-model="username" name="username" required>
   </div>
-  <div class="form-group">
-    <label for="password">Password</label>
+  <div class="form-group" ng-class="{'has-success': registration.password.$valid,
+    'has-error': registration.password.$dirty && registration.password.$invalid}">
+    <label class="control-label" for="password">Password</label>
     <input type="password" class="form-control" id="password"
-      ng-model="password">
+      ng-model="password" name="password" required>
   </div>
-  <div class="form-group">
-    <label for="password-repeat">Repeat password</label>
+  <div class="form-group" ng-class="{'has-success': registration.passwordRepeat.$valid,
+    'has-error': registration.passwordRepeat.$dirty &&
+    registration.passwordRepeat.$invalid}">
+    <label class="control-label" for="password-repeat">Repeat password</label>
     <input type="password" class="form-control" id="password-repeat"
-      ng-model="passwordRepeat">
+      ng-model="passwordRepeat" name="passwordRepeat" required>
   </div>
 </div>
 <div class="modal-footer">
   <button class="btn btn-primary" type="button"
-    ng-click="$ctrl.attemptRegistration(username, password)">
+    ng-click="$ctrl.attemptRegistration(username, password, passwordRepeat)"
+    ng-disabled="registration.$invalid || registration.$pristine">
     Register
   </button>
 </div>
+</form>

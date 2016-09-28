@@ -1,16 +1,9 @@
-<div class="row">
-  <nav class="navbar navbar-default col-xs-12">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="" ui-sref="note.list">Notes</a>
-      </div>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="" ng-click="$ctrl.openLoginModal()">Login</a></li>
-        <li><a href="" ng-click="$ctrl.openRegistrationModal()">Register</a></li>
-        <li><a href="" ng-click="$ctrl.logout()">Logout</a></li>
-        <li><a href="" ui-sref="note.add">Add Note</a></li>
+  <div class="row">
+    <div class="col-xs-12">
+      <ul class="nav nav-pills">
+        <li ui-sref-active="active"><a href="#" ui-sref="main.note.list">List notes</a></li>
+        <li ui-sref-active="active"><a href="#" ui-sref="main.note.add">Add Note</a></li>
       </ul>
     </div>
-  </nav>
-</div>
-<ui-view></ui-view>
+  </div>
+  <ui-view></ui-view>
