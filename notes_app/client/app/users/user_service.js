@@ -29,7 +29,6 @@
         var data = {'username': username, 'password': password};
         return $http.post(api_path+'login/', data).then(function(response) {
           user.logged_in = true;
-          console.log(user.logged_in)
           return;
         }).catch(function(response) {
           return $q.reject({

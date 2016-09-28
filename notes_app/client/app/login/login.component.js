@@ -15,7 +15,7 @@
       });
     };
     ctrl.success = function() {
-      ctrl.close({'$value': true});
+      ctrl.close();
     };
   };
 

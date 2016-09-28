@@ -4,13 +4,19 @@
   function RegisterCtrl(userService) {
     var ctrl = this;
     ctrl.registrationState = {};
-    ctrl.attemptRegistration = function(username, password) {
+    ctrl.attemptRegistration = function(username, password, verify) {
+      if (password !== verify) {
+        ctrl.registrationState['message'] = 'Passwords do not match'
+        ctrl.registrationState['visible'] = true;
+        ctrl.registrationState['severity'] = 'warning';
+        return;
+      }
       userService.register(username, password).then(function(status) {
         ctrl.registrationState['visible'] = false;
         userService.login(username, password).then(function(status) {
-          ctrl.close({'$value': true});
+          ctrl.close();
         }).catch(function(status) {
-          ctrl.registrationState['message'] = 'Problem logging in; try to log in manually'
+          ctrl.registrationState['message'] = 'Problem during login; try to log in later'
           ctrl.registrationState['severity'] = 'error';
           ctrl.registrationState['visible'] = true;
         })
