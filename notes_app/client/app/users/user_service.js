@@ -3,8 +3,10 @@
 
   userService.$inject = ['$http', '$log', '$q'];
   function userService($http, $log, $q) {
-    var api_path = 'http://localhost:8000/api/v1/user/';
+    var api_path = 'http://localhost:8000/api/v1/user/',
+        user = {'logged_in': false};
     return {
+      'user': user,
       'list': function() {
         return $http.get(api_path).then(function successHandler(response) {
           return response.data;
@@ -26,6 +28,8 @@
       'login': function(username, password) {
         var data = {'username': username, 'password': password};
         return $http.post(api_path+'login/', data).then(function(response) {
+          user.logged_in = true;
+          console.log(user.logged_in)
           return;
         }).catch(function(response) {
           return $q.reject({
@@ -34,7 +38,10 @@
         })
       },
       'logout': function() {
-        return $http.post(api_path+'logout/');
+        return $http.post(api_path+'logout/').then(function(response) {
+          user.logged_in = false;
+          return;
+        });
       }
     }
   };

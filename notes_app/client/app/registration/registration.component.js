@@ -7,7 +7,13 @@
     ctrl.attemptRegistration = function(username, password) {
       userService.register(username, password).then(function(status) {
         ctrl.registrationState['visible'] = false;
-        ctrl.close();
+        userService.login(username, password).then(function(status) {
+          ctrl.close({'$value': true});
+        }).catch(function(status) {
+          ctrl.registrationState['message'] = 'Problem logging in; try to log in manually'
+          ctrl.registrationState['severity'] = 'error';
+          ctrl.registrationState['visible'] = true;
+        })
       }).catch(function(status) {
         ctrl.registrationState['message'] = status.error;
         ctrl.registrationState['severity'] = 'error';

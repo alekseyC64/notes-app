@@ -14,33 +14,28 @@
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 
     $stateProvider.state({
-      'name': 'note',
-      'url': '/note',
-      'abstract': true,
-      'templateUrl': 'templates/notes.tpl.html',
-      'controller': function($uibModal, userService) {
-        var self = this;
-        self.openLoginModal = function() {
-          $uibModal.open({
-            'component': 'login'
-          })
-        };
-        self.openRegistrationModal = function() {
-          $uibModal.open({
-            'component': 'registration'
-          })
-        }
-        self.logout = function() {
-          userService.logout();
-        };
-      },
-      'controllerAs': '$ctrl'
+      'name': 'main',
+      'url': '/',
+      'template': '<main></main>',
+      'abstract': true
     }).state({
-      'name': 'note.list',
+      'name': 'main.welcome',
+      'url': 'welcome',
+      'templateUrl': 'templates/welcome.tpl.html'
+    }).state({
+      'name': 'main.note',
+      'url': 'note',
+      'templateUrl': 'templates/notes.tpl.html',
+      'abstract': true,
+      'data': {
+        'loginRequired': true,
+      }
+    }).state({
+      'name': 'main.note.list',
       'url': '',
       'template': '<notes-list></notes-list>'
     }).state({
-      'name': 'note.add',
+      'name': 'main.note.add',
       'url': '/add',
       'template': '<note-add-form></note-add-form>'
     });
@@ -49,4 +44,17 @@
   };
 
   angular.module('notes').config(config);
+
+  angular.module('notes').run(function($rootScope, $state, userService) {
+    $rootScope.$on('$stateChangeStart',
+      function(event, toState, toParams, fromState, fromParams, options) {
+        if (toState.data && toState.data['loginRequired']) {
+          if (!userService.user.logged_in) {
+            event.preventDefault();
+            $state.go('main.welcome');
+          }
+        }
+      }
+  );
+  })
 })();
