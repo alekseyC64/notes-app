@@ -219,7 +219,6 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             data={'username': self.username, 'password': self.password}
         )
         self.assertHttpOK(response)
-        self.assertEqual(self.deserialize(response)['success'], True)
 
     def test_login_wrong_credentials(self):
         response = self.api_client.post(
@@ -228,7 +227,6 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
                 data={'username': self.username, 'password': 'wrong password'}
         )
         self.assertHttpUnauthorized(response)
-        self.assertEqual(self.deserialize(response)['success'], False)
         self.assertIn('error', self.deserialize(response))
 
     def test_login_disabled_user(self):
@@ -238,18 +236,14 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             data={'username': 'steve', 'password': self.password}
         )
         self.assertHttpForbidden(response)
-        self.assertEqual(self.deserialize(response)['success'], False)
         self.assertIn('error', self.deserialize(response))
 
     def test_logout(self):
         self.setup_session()
         response = self.api_client.post(self.api_logout)
         self.assertHttpOK(response)
-        self.assertEqual(
-            self.deserialize(response)['success'], True)
         response = self.api_client.post(self.api_logout)
         self.assertHttpUnauthorized(response)
-        self.assertEqual(self.deserialize(response)['success'], False)
 
     def test_registration_valid_input(self):
         response = self.api_client.post(
@@ -257,7 +251,6 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             data={'username': 'newusername', 'password': 'newpass'}
         )
         self.assertHttpOK(response)
-        self.assertEqual(self.deserialize(response)['success'], True)
 
     def test_registration_invalid_input(self):
         no_data_response = self.api_client.post(
@@ -281,6 +274,5 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
             data={'username': self.username, 'password': self.password}
         )
         self.assertHttpForbidden(response)
-        self.assertEqual(self.deserialize(response)['success'], False)
         self.assertEqual(
             self.deserialize(response)['error'], 'User already exists')
