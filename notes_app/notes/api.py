@@ -47,7 +47,10 @@ class NoteAuthorization(Authorization):
         raise Unauthorized("Deletes not allowed")
 
     def delete_detail(self, object_list, bundle):
-        raise Unauthorized("Deletes not allowed")
+        if bundle.obj.owner == bundle.request.user:
+            return True
+        else:
+            raise Unauthorized("Deletes not allowed")
 
 
 # Custom User Authorization
@@ -205,8 +208,9 @@ class NoteResource(ModelResource):
         # fields = []
         authorization = NoteAuthorization()
         list_allowed_methods = ['get', 'post']
-        detail_allowed_methods = ['get', 'put', 'patch']
+        detail_allowed_methods = ['get', 'put', 'patch', 'delete']
         authentication = SessionAuthentication()
+
         validation = NoteValidation()
 
     def hydrate(self, bundle):

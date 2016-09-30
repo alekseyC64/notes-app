@@ -5,7 +5,16 @@
 
   function notesService($http, $log) {
     var api_path = 'http://localhost:8000/api/v1/note/';
+    var data = {
+      notes: [],
+      metadata: {}
+    };
+    function updateData(res){
+      data.notes = res.objects;
+      data.metadata = res.meta;
+    }
     return {
+      'data': data,
       'list': function(limit, offset) {
         return $http.get(api_path, {
           'params': {
@@ -13,9 +22,9 @@
             'offset': offset
           }
         }).then(function successHandler(response) {
-          return response.data;
+            updateData(response.data);
         }).catch(function errorHandler(response) {
-          $log.error('Problem with getting the note list from server')
+          $log.error('Problem with getting the note list from server');
           return [];
         });
       },
@@ -39,11 +48,20 @@
           return false;
         })
       },
-      'pagenumToOffset': function(pagenum, limit) {
-        return (pagenum - 1) * limit;
+      'delete': function (id) {
+        return $http.delete(api_path + id + '/').then(function (response) {
+          for (var i = 0; i < data.notes.length; i++) {
+            if (data.notes[i].id === id) {
+              data.notes.splice(i,1);
+            }
+          }
+        }).catch(function errorHandler(response) {
+          $log.error('Problem with deleting the note');
+          return null;
+        });
       }
     }
-  };
+  }
 
   angular.module('notes').factory('notesService', notesService);
 })();
