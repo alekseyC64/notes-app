@@ -4,7 +4,16 @@
   userService.$inject = ['$http', '$log', '$q'];
   function userService($http, $log, $q) {
     var api_path = 'http://localhost:8000/api/v1/user/',
-        user = {'logged_in': false};
+        user = {'logged_in': false, 'data': null};
+    function updateSession() {
+      return $http.get(api_path + 'session/').then(function(response) {
+        user.logged_in = true;
+        user.data = response.data;
+      }).catch(function(response) {
+        user.logged_in = false;
+      })
+    };
+    updateSession();
     return {
       'user': user,
       'list': function() {
@@ -28,7 +37,7 @@
       'login': function(username, password) {
         var data = {'username': username, 'password': password};
         return $http.post(api_path+'login/', data).then(function(response) {
-          user.logged_in = true;
+          updateSession();
           return;
         }).catch(function(response) {
           return $q.reject({
