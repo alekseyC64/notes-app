@@ -12,6 +12,11 @@
           <a href="#" ng-click="$ctrl.openRegistrationModal()">Register</a>
         </li>
         <li ng-switch-when="true">
+          <p class="navbar-text">
+            Welcome,&nbsp;<span ng-bind="$ctrl.user.data.username"></span>!
+          </p>
+        </li>
+        <li ng-switch-when="true">
           <a href="#" ng-click="$ctrl.logout()">Logout</a>
         </li>
       </ul>
