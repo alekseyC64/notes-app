@@ -4,7 +4,11 @@
   MainCtrl.$inject = ['$uibModal', 'userService'];
   function MainCtrl($uibModal, userService) {
     var ctrl = this;
-    ctrl.user = userService.user;
+    ctrl.$onInit = function() {
+      userService.session().then(function(user) {
+        ctrl.user = user;
+      });
+    };
     ctrl.openLoginModal = function() {
       $uibModal.open({
         'component': 'login'

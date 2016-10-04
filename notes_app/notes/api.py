@@ -161,7 +161,10 @@ class UserResource(ModelResource):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return self.create_response(request, {})
+                return self.create_response(request, {
+                    'id': request.user.id,
+                    'username': request.user.username
+                })
             else:
                 return self.create_response(request, {
                     'error': 'User account is disabled'
