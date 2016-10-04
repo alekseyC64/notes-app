@@ -1,5 +1,6 @@
 <div class="row">
-  <note class="col-md-4" ng-repeat="note in $ctrl.notes" note="note">
+  <note class="col-md-4" ng-repeat="note in $ctrl.notes"
+    note="note" is-editable="note.owner == $ctrl.userService.user.data.resource_uri">
 </div>
 <div class="row">
   <div class="col-xs-12">

@@ -2,7 +2,7 @@
   'use strict';
 
   NoteCtrl.$inject = ['notesService', 'userService'];
-  function NoteCtrl(notesService, userService) {
+  function NoteCtrl(notesService) {
     var ctrl = this;
     ctrl.isEditing = false;
     ctrl.notecopy = {};
@@ -40,7 +40,8 @@
     templateUrl: 'templates/note.tpl.html',
     controller: NoteCtrl,
     bindings: {
-      note: '<'
+      note: '<',
+      isEditable: '<'
     }
   });
 })();
