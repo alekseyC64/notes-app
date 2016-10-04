@@ -140,6 +140,12 @@ class UserResource(ModelResource):
                     trailing_slash()),
                 self.wrap_view('register'), name='register'
             ),
+            url(
+                r'{}/session{}$'.format(
+                    self._meta.resource_name,
+                    trailing_slash()),
+                self.wrap_view('session'), name='session'
+            ),
         ]
 
     def login(self, request, **kwargs):
@@ -155,7 +161,10 @@ class UserResource(ModelResource):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return self.create_response(request, {})
+                return self.create_response(request, {
+                    'id': request.user.id,
+                    'username': request.user.username
+                })
             else:
                 return self.create_response(request, {
                     'error': 'User account is disabled'
@@ -193,6 +202,16 @@ class UserResource(ModelResource):
         if request.user and request.user.is_authenticated():
             logout(request)
             return self.create_response(request, {})
+        else:
+            return self.create_response(request, {}, HttpUnauthorized)
+
+    def session(self, request, **kwargs):
+        self.method_check(request, allowed=['get'])
+        if request.user and request.user.is_authenticated():
+            return self.create_response(request, {
+                'id': request.user.id,
+                'username': request.user.username
+            })
         else:
             return self.create_response(request, {}, HttpUnauthorized)
 
