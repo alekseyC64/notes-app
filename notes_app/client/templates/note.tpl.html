@@ -16,8 +16,15 @@
     <textarea ng-switch-when="true" class="form-control"
       ng-model="$ctrl.notecopy.content"></textarea>
     <span ng-switch-default ng-bind="$ctrl.note.content"></span>
+    <div ng-switch-default ng-show="$ctrl.note.shared_with.length">
+      <span>Shared with:</span>
+      <span ng-repeat="user in $ctrl.note.shared_with" class="label label-info"
+        ng-bind="user.username"></span>
+    </div>
+    <user-selector selected="$ctrl.notecopy.shared_with" ng-switch-when="true"
+      on-update="$ctrl.updateSelected(selected)"></user-selector>
   </div>
-    <div class="panel-footer">
+  <div class="panel-footer">
     Created on {{$ctrl.note.created_on | date}},
     updated on {{$ctrl.note.updated_on | date}}
   </div>

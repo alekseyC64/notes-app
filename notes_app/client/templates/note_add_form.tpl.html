@@ -16,14 +16,7 @@
   </div>
   <div class="form-group">
     <label class="control-label">Sharing with</label>
-    <ui-select ng-model="$ctrl.selectedUsers" multiple>
-      <ui-select-match placeholder="Select users to share the note with">
-        {{$item.first_name}}&nbsp;{{$item.last_name}}
-      </ui-select-match>
-      <ui-select-choices repeat="user in ($ctrl.users| filter: $select.search) track by user.id">
-        <span>{{user.first_name}}&nbsp;{{user.last_name}}</span>
-      </ui-select-choices>
-    </ui-select>
+    <user-selector on-update="$ctrl.updateSelected(selected)"></user-selector>    
   </div>
   <div class="form-group">
     <input type="submit" class="btn btn-default" value="Add"

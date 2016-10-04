@@ -10,11 +10,9 @@
     this.alert_state = {};
     this.locked = false;
 
-    userService.list().then(function(response) {
-      self.users = response.objects;
-    }).catch(function(response) {
-      console.log('Error accessing user data');
-    });
+    this.updateSelected = function(selected) {
+      this.selectedUsers = selected;
+    }
 
     this.reset = function() {
       self.locked = false;
