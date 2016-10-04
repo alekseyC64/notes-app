@@ -48,6 +48,14 @@
           return false;
         })
       },
+      'update': function(id, data) {
+        return $http.patch(api_path + id + '/', data).then(function(response) {
+          return true;
+        }).catch(function(response) {
+          $log.error('Problem with updating the note')
+          return false;
+        })
+      },
       'delete': function (id) {
         return $http.delete(api_path + id + '/').then(function (response) {
           for (var i = 0; i < data.notes.length; i++) {
