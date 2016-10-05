@@ -1,11 +1,11 @@
 (function() {
   'use strict';
 
-  NotesCtrl.$inject = ['notesService'];
-
-  function NotesCtrl(notesService) {
+  NotesCtrl.$inject = ['notesService', 'userService'];
+  function NotesCtrl(notesService, userService) {
     var ctrl = this;
 
+    ctrl.userService = userService;
     ctrl.currentPage = 1;
     ctrl.noteLimit = 20;
     ctrl.update = function() {

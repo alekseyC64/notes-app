@@ -1,16 +1,20 @@
 <div class="panel" ng-switch="$ctrl.isEditing"
-  ng-class="{'panel-warning': $ctrl.isEditing, 'panel-info': !$ctrl.isEditing}" >
+  ng-class="{'panel-warning': $ctrl.isEditable && $ctrl.isEditing,
+    'panel-primary': $ctrl.isEditable && !$ctrl.isEditing,
+    'panel-info': !$ctrl.isEditable}">
   <div class="panel-heading clearfix">
     <input ng-switch-when="true" ng-model="$ctrl.notecopy.title"></textarea>
     <h2 ng-switch-default class="panel-title pull-left">{{$ctrl.note.title}}</h2>
-    <button type="button" ng-click="$ctrl.resetNote()" ng-switch-when="true"
-      class="pull-right">Cancel</button>
-    <button type="button" ng-click="$ctrl.updateNote()" ng-switch-when="true"
-      class="pull-right">OK</button>
-    <button type="button" ng-click="$ctrl.toggleEditing()"
-      ng-switch-default class="pull-right">E</button>
-    <button type="button" ng-click="$ctrl.deleteNote()"
-      ng-switch-default class="pull-right">X</button>
+    <div class="btn-group btn-group-xs pull-right" ng-if="$ctrl.isEditable">
+      <button type="button" ng-click="$ctrl.resetNote()" ng-switch-when="true"
+        class="btn btn-default">Cancel</button>
+      <button type="button" ng-click="$ctrl.updateNote()" ng-switch-when="true"
+          class="btn btn-default">OK</button>
+      <button type="button" ng-click="$ctrl.toggleEditing()" ng-switch-default
+        class="btn btn-default">E</button>
+      <button type="button" ng-click="$ctrl.deleteNote()" ng-switch-default
+         class="btn btn-default">X</button>
+    </div>
   </div>
   <div class="panel-body">
     <textarea ng-switch-when="true" class="form-control"
@@ -21,7 +25,7 @@
       <span ng-repeat="user in $ctrl.note.shared_with" class="label label-info"
         ng-bind="user.username"></span>
     </div>
-    <user-selector selected="$ctrl.notecopy.shared_with" ng-switch-when="true"
+    <user-selector selected="$ctrl.notecopy.selectedUsers" ng-switch-when="true"
       on-update="$ctrl.updateSelected(selected)"></user-selector>
   </div>
   <div class="panel-footer">

@@ -163,7 +163,8 @@ class UserResource(ModelResource):
                 login(request, user)
                 return self.create_response(request, {
                     'id': request.user.id,
-                    'username': request.user.username
+                    'username': request.user.username,
+                    'resource_uri': self.get_resource_uri(request.user)
                 })
             else:
                 return self.create_response(request, {
@@ -210,7 +211,8 @@ class UserResource(ModelResource):
         if request.user and request.user.is_authenticated():
             return self.create_response(request, {
                 'id': request.user.id,
-                'username': request.user.username
+                'username': request.user.username,
+                'resource_uri': self.get_resource_uri(request.user)
             })
         else:
             return self.create_response(request, {}, HttpUnauthorized)
