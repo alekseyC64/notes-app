@@ -25,7 +25,7 @@
       <span ng-repeat="user in $ctrl.note.shared_with" class="label label-info"
         ng-bind="user.username"></span>
     </div>
-    <user-selector selected="$ctrl.notecopy.shared_with" ng-switch-when="true"
+    <user-selector selected="$ctrl.notecopy.selectedUsers" ng-switch-when="true"
       on-update="$ctrl.updateSelected(selected)"></user-selector>
   </div>
   <div class="panel-footer">
