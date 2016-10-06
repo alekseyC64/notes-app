@@ -36,12 +36,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'tastypie',
     'notes',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -114,3 +116,10 @@ STATICFILES_DIRS = [
 # https://django-tastypie.readthedocs.io/en/latest/settings.html
 
 TASTYPIE_DEFAULT_FORMATS = ['json']
+
+# CORS Configuration
+# https://pypi.python.org/pypi/django-cors-middleware/1.3.1
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000'
+)
+CORS_ALLOW_CREDENTIALS = True

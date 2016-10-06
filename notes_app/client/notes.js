@@ -12,6 +12,7 @@
   function config($stateProvider, $urlRouterProvider, $httpProvider) {
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    $httpProvider.defaults.allowCredentials = true;
 
     $stateProvider.state({
       'name': 'main',
