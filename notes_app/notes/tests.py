@@ -215,9 +215,15 @@ class NoteResourceTest(ResourceTestCaseMixin, TestCase):
             data=self.post_data_absent_title))
 
     def test_delete_detail(self):
-        """Delete HTTP request is not allowed regardless of user status."""
-        self.assertHttpMethodNotAllowed(self.api_client.delete(
+        """Delete HTTP request is allowed only on owned notes."""
+        self.assertHttpUnauthorized(self.api_client.delete(
             self.api_detail, format='json'))
         self.setup_session()
-        self.assertHttpMethodNotAllowed(self.api_client.delete(
+        original_count = Note.objects.count()
+        self.assertHttpAccepted(self.api_client.delete(
             self.api_detail, format='json'))
+        self.assertEqual(Note.objects.count(), original_count - 1)
+        self.assertHttpNotFound(self.api_client.get(
+            self.api_detail, format='json'))
+        self.assertHttpUnauthorized(self.api_client.delete(
+            self.api_detail_shared, format='json'))
