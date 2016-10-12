@@ -1,0 +1,21 @@
+sudo: required
+dist: trusty
+language: python
+python:
+  - "2.7"
+addons:
+  apt:
+    sources:
+    - sourceline: 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.6'
+    packages:
+    - mysql-common
+    - mysql-server
+    - mysql-client
+install: "pip install -r requirements.txt"
+before_script:
+  - mysql -u root -e "CREATE USER 'bigdaddy'@'localhost' IDENTIFIED BY 'bigdb'"
+  - mysql -u root -e 'CREATE DATABASE IF NOT EXISTS notesapp_db CHARACTER SET utf8 COLLATE utf8_general_ci'
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON notesapp_db.* TO 'bigdaddy'@'localhost' IDENTIFIED BY 'bigdb'"
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON test_notesapp_db.* TO 'bigdaddy'@'localhost' IDENTIFIED BY 'bigdb'"
+  - cd notes_app
+script: "python manage.py test"
