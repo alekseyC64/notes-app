@@ -157,3 +157,6 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
+
+# virtuelenv folder on Windows
+*-env/

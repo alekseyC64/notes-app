@@ -16,6 +16,11 @@
             Welcome,&nbsp;<span ng-bind="$ctrl.user.data.username"></span>!
           </p>
         </li>
+        <li ng-switch-when="true"  >
+          <p class="navbar-text" ng-if="$ctrl.user.data.is_superuser">
+            <a href ui-sref="main.users" class="btn btn-success">Manage users</a>
+          </p>
+        </li>
         <li ng-switch-when="true">
           <a href="#" ng-click="$ctrl.logout()">Logout</a>
         </li>

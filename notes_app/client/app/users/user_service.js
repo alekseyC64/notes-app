@@ -15,6 +15,20 @@
           return [];
         });
       },
+      'update': function(id, data) {
+        return $http.put(api_path + id + '/', data).then(function(response){
+          return;
+        }).catch(function(error){
+          console.log(error);
+        });
+      },
+      'delete': function(id) {
+        return $http.delete(api_path + id + '/').then(function(response){
+          return;
+        }).catch(function(error){
+          console.log(error);
+        });
+      },
       'register': function(username, password) {
         var data = {'username': username, 'password': password}
         return $http.post(api_path+'register/', data).then(function(response) {

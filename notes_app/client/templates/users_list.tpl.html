@@ -1,0 +1,8 @@
+<div>
+    <style>.ui-grid-header-cell {height: 30px;}</style>
+    <div ui-grid="$ctrl.gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-pagination ui-grid-selection></div>
+</div>
+<button ng-click="$ctrl.deleteSelected()" class="btn btn-danger pull-right">
+    <span class="glyphicon glyphicon-trash"></span>
+    <span>Delete selected</span>
+</button>

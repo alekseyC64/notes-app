@@ -80,10 +80,10 @@ class UserAuthorization(Authorization):
         return True
 
     def update_detail(self, object_list, bundle):
-        return bundle.obj.id == bundle.request.user.id
+        return bundle.obj.id == bundle.request.user.id or bundle.request.user.is_superuser
 
     def delete_detail(self, object_list, bundle):
-        if bundle.obj.id == bundle.request.user.id:
+        if bundle.obj.id == bundle.request.user.id or bundle.request.user.is_superuser:
             return True
         else:
             raise Unauthorized('Not yours data')
@@ -112,7 +112,7 @@ class NoteValidation(Validation):
 # }
 class UserResource(ModelResource):
     class Meta:
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_superuser']
         queryset = User.objects.all()
         resource_name = 'user'
         list_allowed_methods = ['get', 'post']
@@ -164,7 +164,8 @@ class UserResource(ModelResource):
                 return self.create_response(request, {
                     'id': request.user.id,
                     'username': request.user.username,
-                    'resource_uri': self.get_resource_uri(request.user)
+                    'resource_uri': self.get_resource_uri(request.user),
+                    'is_superuser': request.user.is_superuser
                 })
             else:
                 return self.create_response(request, {
@@ -212,7 +213,8 @@ class UserResource(ModelResource):
             return self.create_response(request, {
                 'id': request.user.id,
                 'username': request.user.username,
-                'resource_uri': self.get_resource_uri(request.user)
+                'resource_uri': self.get_resource_uri(request.user),
+                'is_superuser': request.user.is_superuser
             })
         else:
             return self.create_response(request, {}, HttpUnauthorized)

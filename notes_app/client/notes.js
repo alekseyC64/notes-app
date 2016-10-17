@@ -5,7 +5,13 @@
     'ui.router',
     'ui.select',
     'ui.bootstrap',
-    'ngSanitize'
+    'ngSanitize',
+    'ui.grid',
+    'ui.grid.edit',
+    'ui.grid.rowEdit',
+    'ui.grid.cellNav',
+    'ui.grid.pagination',
+    'ui.grid.selection'
   ]);
 
   config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
@@ -22,6 +28,19 @@
       'name': 'main.welcome',
       'url': 'welcome',
       'templateUrl': 'templates/welcome.tpl.html'
+    }).state({
+      'name': 'main.users',
+      'url': 'users',
+      'template': '<users-list></users-list>',
+      'data': {
+        'loginRequired': true
+      },
+      'onEnter': function($state, userService) {
+            var user_data = userService.user.data;
+            if (!user_data.is_superuser ) {
+                $state.go('main.note.list');
+            }
+      }
     }).state({
       'name': 'main.note',
       'url': 'note',
