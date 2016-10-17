@@ -24,7 +24,6 @@
     };
   };
 
-
   angular.module('notes').component('main', {
     'templateUrl': 'templates/main.tpl.html',
     'controller': MainCtrl

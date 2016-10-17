@@ -5,13 +5,14 @@
     'ui.router',
     'ui.select',
     'ui.bootstrap',
-    'ngSanitize',
     'ui.grid',
     'ui.grid.edit',
     'ui.grid.rowEdit',
     'ui.grid.cellNav',
     'ui.grid.pagination',
-    'ui.grid.selection'
+    'ui.grid.selection',
+    'ngSanitize',
+    'notes.alert',
   ]);
 
   config.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];

@@ -157,6 +157,11 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
+# Node modules
+node_modules/
 
-# virtuelenv folder on Windows
+# Istanbul coverage
+coverage/
+
+# virtualenv folder on Windows
 *-env/

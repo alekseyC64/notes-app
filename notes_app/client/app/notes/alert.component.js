@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  angular.module('notes').component('alert', {
+  angular.module('notes.alert', []).component('alert', {
     'template': '<div class="alert" ng-show="$ctrl.state.visible" \
     ng-bind="$ctrl.state.message" ng-class="$ctrl.getSeverity()"></div>',
     'controller': function() {
