@@ -39,7 +39,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'notes_app/client/templates/*.tpl.html': ['ng-html2js']
+      'notes_app/client/templates/*.tpl.html': ['ng-html2js'],
+      'notes_app/client/**/!(*_spec).js': ['coverage']
     },
 
     ngHtml2JsPreprocessor: {
@@ -51,7 +52,15 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
+
+
+    // coverage reporter configuration
+    // see: https://github.com/karma-runner/karma-coverage
+    coverageReporter: {
+      type: 'html',
+      dir: 'coverage/'
+    },
 
 
     // web server port
