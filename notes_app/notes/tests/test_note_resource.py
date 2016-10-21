@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.test import TestCase
 from tastypie.test import ResourceTestCaseMixin
-from .models import Note
+from notes.models import Note
 
 
 class NoteResourceTest(ResourceTestCaseMixin, TestCase):
