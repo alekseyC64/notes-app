@@ -109,13 +109,39 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
         )
 
         # delete
-        new_user = User.objects.get(first_name='newtest', email='newtest@email.com')
+        new_user = User.objects.get(
+            first_name='newtest', email='newtest@email.com')
         self.assertHttpUnauthorized(
             self.api_client.delete(
                 '/api/v1/user/{0}/'.format(new_user.id),
                 format='json'
             )
         )
+
+    def test_delete_detail_superuser(self):
+        """Superuser should be able to DELETE another users"""
+        self.setup_session()
+        self.assertHttpCreated(
+            self.api_client.post(
+                self.api_list,
+                format='json',
+                data={
+                    'email': 'newtest2@email.com',
+                    'first_name': 'newtest2',
+                    'is_active': 'true',
+                    'is_staff': 'false',
+                    'is_superuser': 'false',
+                    'last_name': 'test2',
+                    'password': 'test',
+                    'username': 'test2'
+                }
+            )
+        )
+        new_user = User.objects.get(
+            first_name='newtest2', email='newtest2@email.com')
+        self.assertHttpAccepted(self.api_client.delete(
+            '/api/v1/user/{0}/'.format(new_user.id), format='json'))
+        self.assertEqual(User.objects.filter(id=new_user.id).exists(), False)
 
     # Test Detail
     def test_get_detail_json(self):
@@ -166,6 +192,22 @@ class UserResourceTest(ResourceTestCaseMixin, TestCase):
         )
         self.assertHttpAccepted(resp)
         self.assertEqual(User.objects.get(id=self.api_user_id).last_name, 'testPatch')
+
+    def test_patch_detail_superuser(self):
+        """Superuser should be able to patch other users"""
+        self.setup_session()
+        resp = self.api_client.patch(
+            '/api/v1/user/2/',
+            format='json',
+            data={
+                'first_name': 'new name',
+                'last_name': 'new last name'
+            }
+        )
+        self.assertHttpAccepted(resp)
+        user = User.objects.get(id=2)
+        self.assertEqual(user.first_name, 'new name')
+        self.assertEqual(user.last_name, 'new last name')
 
     # 401 Unauthorized
     def test_unauthorized(self):
