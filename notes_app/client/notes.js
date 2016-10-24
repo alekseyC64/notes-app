@@ -12,6 +12,7 @@
     'ui.grid.pagination',
     'ui.grid.selection',
     'ngSanitize',
+    'templates',
     'notes.alert',
   ]);
 
