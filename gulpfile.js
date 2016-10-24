@@ -1,6 +1,7 @@
 const gulp = require('gulp'),
       concat = require('gulp-concat'),
       gulpif = require('gulp-if'),
+      htmlmin = require('gulp-htmlmin'),
       inject = require('gulp-inject'),
       minifyCss = require('gulp-clean-css'),
       notify = require('gulp-notify'),
@@ -12,6 +13,9 @@ const gulp = require('gulp'),
 gulp.task('buildtemplates', function() {
   return gulp
     .src('./notes_app/client/**/*.tpl.html')
+    .pipe(htmlmin({
+      'collapseWhitespace': true
+    }))
     .pipe(templateCache())
     .pipe(gulp.dest('./notes_app/dist'))
     .pipe(notify({
@@ -47,6 +51,6 @@ gulp.task('test', ['default'], function(done) {
 })
 
 gulp.task('watch', ['default'], function() {
-  gulp.watch('./notes_app/client/**/*.tpl.html', ['copytemplates'])
+  gulp.watch('./notes_app/client/**/*.tpl.html', ['buildtemplates'])
   gulp.watch('./notes_app/client/**/*.js', ['build'])
 })

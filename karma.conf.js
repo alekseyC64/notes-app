@@ -25,6 +25,7 @@ module.exports = function(config) {
       'node_modules/angular-ui-grid/ui-grid.js',
       // app
       'notes_app/client/notes.js',
+      'notes_app/client/templates.js',
       'notes_app/client/app/**/*.js',
       // templates
       '**/*.tpl.html',
