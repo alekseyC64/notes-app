@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: Notes', function() {
-  var notesService, httpBackend, log
+  var notesService, httpBackend, $log
 
   var fixture_meta = {
     'limit': 20,
@@ -50,107 +50,114 @@ describe('Service: Notes', function() {
   }
 
   beforeEach(module('notes'))
-  beforeEach(inject(function(_notesService_, $httpBackend, $log) {
+  beforeEach(module('test.templates'))
+  beforeEach(inject(function(_notesService_, $httpBackend, _$log_) {
     notesService = _notesService_
     httpBackend = $httpBackend
-    log = $log
+    $log = _$log_
   }))
 
   it('binds a data object', function() {
     expect(notesService.data).toBeDefined()
   })
 
-  describe("Listing notes", function() {
-    it('updates the data object on a list() call', function() {
-      httpBackend.whenGET(notesService.api_path).respond(fixture_response)
-      notesService.list().then(function(result) {
-        expect(notesService.data.meta).toEqual(fixture_meta)
-        expect(notesService.data.objects).toEqual(fixture_objects)
+  describe("HTTP API tests", function() {
+    afterEach(function() {
+      httpBackend.flush()
+      httpBackend.verifyNoOutstandingExpectation()
+    })
+    describe("Listing notes", function() {
+      it('updates the data object on a list() call', function() {
+        httpBackend.expectGET(notesService.api_path).respond(fixture_response)
+        notesService.list().then(function(result) {
+          expect(notesService.data.metadata).toEqual(fixture_meta)
+          expect(notesService.data.notes).toEqual(fixture_objects)
+        })
+      })
+
+      it('assigns an empty list to data on list() failure and logs a message', function() {
+        httpBackend.expectGET(notesService.api_path).respond(403, '')
+        notesService.list().then(function(result) {
+          expect(notesService.data.notes.length).toEqual(0)
+          expect($log.error.logs).toContain(['Problem with getting the note list from server'])
+        })
       })
     })
 
-    it('assigns an empty list to data on list() failure and logs a message', function() {
-      httpBackend.whenGET(notesService.api_path).respond(403, '')
-      notesService.list().then(function(result) {
-        expect(notesService.data.notes.length).toEqual(0)
-        expect(log.logs).toContain('Problem with getting the note list from server')
+    describe("READ method", function() {
+      it("returns a note on a successful server call", function() {
+        httpBackend.expectGET(notesService.api_path + '1/').respond(fixture_objects[0])
+        notesService.read(1).then(function(result) {
+          expect(result).toEqual(fixture_objects[0])
+        })
       })
-    })
-  })
 
-  describe("READ method", function() {
-    it("returns a note on a successful server call", function() {
-      httpBackend.whenGET(notesService.api_path + '1/').respond(fixture_objects[0])
-      notesService.read(1).then(function(result) {
-        expect(result).toEqual(fixture_objects[0])
-      })
-    })
-
-    it("returns null on a failed server call and logs a message", function() {
-      httpBackend.whenGET(notesService.api_path + '1/').respond(403, '')
-      notesService.read(1).then(function(result) {
-        expect(result).toBeNull()
-        expect(log.logs).toContain('Problem with getting the note from server')
-      })
-    })
-  })
-
-  describe("CREATE method", function() {
-    it("returns true on a successful note creation", function() {
-      httpBackend.whenPOST(notesService.api_path).respond('')
-      notesService.create({}).then(function(result) {
-        expect(result).toBeTrue()
+      it("returns null on a failed server call and logs a message", function() {
+        httpBackend.expectGET(notesService.api_path + '1/').respond(403, '')
+        notesService.read(1).then(function(result) {
+          expect(result).toBeNull()
+          expect($log.error.logs).toContain(['Problem with getting the note from server'])
+        })
       })
     })
 
-    it("returns false on a failed note creation and logs a message", function() {
-      httpBackend.whenPOST(notesService.api_path).respond(403, '')
-      notesService.create({}).then(function(result) {
-        expect(result).toBeFalse()
-        expect(log.logs).toContain('Problem with creating the note')
+    describe("CREATE method", function() {
+      it("returns true on a successful note creation", function() {
+        httpBackend.expectPOST(notesService.api_path).respond('')
+        notesService.create({}).then(function(result) {
+          expect(result).toBe(true)
+        })
       })
-    })
-  })
 
-  describe("UPDATE method", function() {
-    it("returns true on a successful note update", function() {
-      httpBackend.whenPATCH(notesService.api_path+'1/').respond('')
-      notesService.update(1, {}).then(function(result) {
-        expect(result).toBeTrue()
-      })
-    })
-
-    it("returns false on a failed note update and logs a message", function() {
-      httpBackend.whenPATCH(notesService.api_path+'1/').respond(403, '')
-      notesService.update(1, {}).then(function(result) {
-        expect(result).toBeFalse()
-        expect(log.logs).toContain('Problem with updating the note')
-      })
-    })
-  })
-
-  describe("DELETE method", function() {
-    var deleted
-
-    beforeEach(function() {
-      notesService.data.metadata = fixture_meta
-      notesService.data.notes = fixture_objects
-      deleted = notesService.data.notes[0]
-    })
-
-    it("removes a note from the bound data on success", function() {
-      httpBackend.whenDELETE(notesService.api_path+'1/').respond('')
-      notesService.delete(1).then(function(result) {
-        expect(notesService.data.notes.length).toEqual(2)
-        expect(notesService.data.notes).not.toContain(deleted)
+      it("returns false on a failed note creation and logs a message", function() {
+        httpBackend.expectPOST(notesService.api_path).respond(403, '')
+        notesService.create({}).then(function(result) {
+          expect(result).toBe(false)
+          expect($log.error.logs).toContain(['Problem with creating the note'])
+        })
       })
     })
 
-    it("returns null on deletion failure and logs a message", function() {
-      httpBackend.whenDELETE(notesService.api_path+'1/').respond(403, '')
-      notesService.delete(1).then(function(result) {
-        expect(result).toBeNull()
-        expect(log.logs).toContain('Problem with deleting the note')
+    describe("UPDATE method", function() {
+      it("returns true on a successful note update", function() {
+        httpBackend.expectPATCH(notesService.api_path+'1/').respond('')
+        notesService.update(1, {}).then(function(result) {
+          expect(result).toBe(true)
+        })
+      })
+
+      it("returns false on a failed note update and logs a message", function() {
+        httpBackend.expectPATCH(notesService.api_path+'1/').respond(403, '')
+        notesService.update(1, {}).then(function(result) {
+          expect(result).toBe(false)
+          expect($log.error.logs).toContain(['Problem with updating the note'])
+        })
+      })
+    })
+
+    describe("DELETE method", function() {
+      var deleted
+
+      beforeEach(function() {
+        notesService.data.metadata = fixture_meta
+        notesService.data.notes = fixture_objects
+        deleted = notesService.data.notes[0]
+      })
+
+      it("removes a note from the bound data on success", function() {
+        httpBackend.expectDELETE(notesService.api_path+'1/').respond('')
+        notesService.delete(1).then(function(result) {
+          expect(notesService.data.notes.length).toEqual(2)
+          expect(notesService.data.notes).not.toContain(deleted)
+        })
+      })
+
+      it("returns null on deletion failure and logs a message", function() {
+        httpBackend.expectDELETE(notesService.api_path+'1/').respond(403, '')
+        notesService.delete(1).then(function(result) {
+          expect(result).toBeNull()
+          expect($log.error.logs).toContain(['Problem with deleting the note'])
+        })
       })
     })
   })

@@ -7,6 +7,7 @@
         user = {'logged_in': false, 'data': null};
     return {
       'user': user,
+      'api_path': api_path,
       'list': function() {
         return $http.get(api_path).then(function successHandler(response) {
           return response.data;
@@ -19,14 +20,14 @@
         return $http.put(api_path + id + '/', data).then(function(response){
           return;
         }).catch(function(error){
-          console.log(error);
+          $log.error(error);
         });
       },
       'delete': function(id) {
         return $http.delete(api_path + id + '/').then(function(response){
           return;
         }).catch(function(error){
-          console.log(error);
+          $log.error(error);
         });
       },
       'register': function(username, password) {

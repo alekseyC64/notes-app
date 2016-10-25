@@ -15,6 +15,7 @@
     }
     return {
       'data': data,
+      'api_path': api_path,
       'list': function(limit, offset) {
         return $http.get(api_path, {
           'params': {
