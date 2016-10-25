@@ -27,5 +27,6 @@ v1_api.register(UserResource())
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
-    url(r'^$', RedirectView.as_view(url='static/index.html'), name='index')
+    url(r'^$', RedirectView.as_view(url='static/index.html', permanent=False),
+        name='index')
 ]

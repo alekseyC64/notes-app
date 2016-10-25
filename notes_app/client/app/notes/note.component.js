@@ -24,6 +24,7 @@
           ctrl.note.title = ctrl.notecopy.title;
           ctrl.note.content = ctrl.notecopy.content;
           ctrl.note.shared_with = ctrl.notecopy.selectedUsers;
+          ctrl.note.updated_on = new Date();
           ctrl.isEditing = false;
         }
       })

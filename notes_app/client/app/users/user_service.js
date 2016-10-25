@@ -36,7 +36,7 @@
           return;
         }).catch(function(response) {
           return $q.reject({
-            'error': response.data['error'] ? response.data['error'] : 'Server error'
+            'error': (response.data && response.data['error']) ? response.data['error'] : 'Server error'
           })
         });
       },
@@ -48,7 +48,7 @@
           return;
         }).catch(function(response) {
           return $q.reject({
-            'error': response.data['error'] ? response.data['error'] : 'Server error'
+            'error': (response.data && response.data['error']) ? response.data['error'] : 'Server error'
           });
         })
       },

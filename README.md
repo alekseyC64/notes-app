@@ -4,8 +4,9 @@
  - MySQL Server
  - [Python 2.7.*](https://www.python.org/downloads/)
  - [pip](https://pip.pypa.io/en/stable/installing/)
+ - [npm](https://nodejs.org/en/)
 
-## Set MySql Server
+## MySql Server Configuration
 
 > **`Watch this first` to learn how to install MySQL Server on Ubuntu https://youtu.be/54DDI4wUwqU** (in case you dont't know)
 
@@ -91,3 +92,24 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 Go to http://localhost:8000/
+
+---
+
+### npm
+
+To manage the build process of frontend code, we use npm and gulp.
+
+To install project dependencies:
+```
+npm install
+```
+
+To build frontend code execute:
+```
+npm run build
+```
+
+To run tests execute:
+```
+npm test
+```

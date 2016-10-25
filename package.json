@@ -1,19 +1,20 @@
 {
-  "name": "notes-app-ui",
+  "name": "notes-app",
   "version": "0.0.1",
   "description": "Frontend part of the notes project",
   "scripts": {
-    "test": "node node_modules/gulp/bin/gulp.js test"
+    "test": "node node_modules/gulp/bin/gulp.js test",
+    "build": "node node_modules/gulp/bin/gulp.js build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dglebovskiy/notes-app-ui.git"
+    "url": "git+https://github.com/evgeny-sav/notes-app.git"
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dglebovskiy/notes-app-ui/issues"
+    "url": "https://github.com/evgeny-sav/notes-app/issues"
   },
-  "homepage": "https://github.com/dglebovskiy/notes-app-ui#readme",
+  "homepage": "https://github.com/evgeny-sav/notes-app#readme",
   "private": true,
   "devDependencies": {
     "angular-mocks": "1.5.8",
