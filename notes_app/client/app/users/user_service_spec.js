@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: User', function() {
-  var userService, httpBackend, log
+  var userService, httpBackend, $log
 
   var fixture_userdata = {
     'id': 1,
@@ -41,7 +41,7 @@ describe('Service: User', function() {
       'last_name': 'Martinez',
       'resource_uri': '/api/v1/user/3/',
       'username': 'demo_user_02'
-    },
+    }
   ]
 
   var fixture_response = {
@@ -50,93 +50,142 @@ describe('Service: User', function() {
   }
 
   beforeEach(module('notes'))
-  beforeEach(inject(function(_userService_, $httpBackend, $log) {
+  beforeEach(module('test.templates'))
+  beforeEach(inject(function(_userService_, $httpBackend, _$log_) {
     userService = _userService_
     httpBackend = $httpBackend
-    log = $log
+    $log = _$log_
   }))
 
   it("should bind user data", function() {
     expect(userService.user).toBeDefined()
   })
 
-  describe("List method", function() {
-    it("should return the list of users on success", function() {
-      httpBackend.whenGET(userService.api_path).respond(fixture_response)
-      userService.list().then(function(result) {
-        expect(result).toEqual(fixture_users)
-      })
-    })
-    it("should return an empty list on failure and log a message", function() {
-      httpBackend.whenGET(userService.api_path).respond(403, '')
-      userService.list().then(function(result) {
-        expect(result).toEqual([])
-        expect(log.errors).toContain('Problem with fetching data from server')
-      })
-    })
-  })
-
-  describe("Register method", function() {
-    it("should do a post request", function() {
-      httpBackend.expectPOST(userService.api_path+'register/').respond('')
-      userService.register('foo', 'bar').then(function(result) {
-        httpBackend.verifyNoOutstandingExpectation()
-      })
+  describe("HTTP API tests", function() {
+    afterEach(function() {
+      httpBackend.flush()
+      httpBackend.verifyNoOutstandingExpectation()
     })
 
-    it("should return an object with error message on fail", function() {
-      httpBackend.whenPOST(userService.api_path+'register/').respond(400, {
-        'error': 'Password is missing'
+    describe("List method", function() {
+      it("should return the list of users on success", function() {
+        httpBackend.expectGET(userService.api_path).respond(fixture_response)
+        userService.list().then(function(result) {
+          expect(result).toEqual(fixture_response)
+        })
       })
-      userService.login('foobar', 'foo').catch(function(result) {
-        expect(result.error).toEqual('Password is missing')
-      })
-    })
-  })
 
-  describe("Login method", function() {
-    it("should set session data on successful login", function() {
-      httpBackend.whenPOST(userService.api_path+'login/').respond(fixture_userdata)
-      userService.login('foobar', 'foobar').then(function(result) {
-        expect(userService.user.logged_in).toBeTrue()
-        expect(userService.user.data).toEqual(fixture_userdata)
+      it("should return an empty list on failure and log a message", function() {
+        httpBackend.expectGET(userService.api_path).respond(403, '')
+        userService.list().then(function(result) {
+          expect(result).toEqual([])
+          expect($log.error.logs).toContain(['Problem with fetching data from server'])
+        })
       })
     })
 
-    it("should return an object with error message on fail", function() {
-      httpBackend.whenPOST(userService.api_path+'login/').respond(403, {
-        'error': 'Username or password is incorrect'
+    describe("Update method", function() {
+      it("should do a put request", function() {
+        httpBackend.expectPUT(userService.api_path+'1/').respond('')
+        userService.update(1, {})
       })
-      userService.login('foobar', 'foo').catch(function(result) {
-        expect(userService.user.logged_in).toBeFalse()
-        expect(result.error).toEqual('Username or password is incorrect')
-      })
-    })
-  })
 
-  describe("Logout method", function() {
-    it("should set login status to false on logout", function() {
-      httpBackend.whenPOST(userService.api_path+'logout/').respond('')
-      userService.logout().then(function(result) {
-        expect(userService.user.logged_in).toBeFalse()
-      })
-    })
-  })
-
-  describe("Session method", function() {
-    it("should set session data on successful call", function() {
-      httpBackend.whenGET(userService.api_path+'session/').respond(fixture_userdata)
-      userService.session().then(function(result) {
-        expect(userService.user.logged_in).toBeTrue()
-        expect(userService.user.data).toEqual(fixture_userdata)
+      it("should log response on error", function() {
+        httpBackend.expectPUT(userService.api_path+'1/').respond(403, 'Not authorized')
+        userService.update(1, {}).catch(function(result) {
+          expect($log.error.logs).toContain(['Not authorized'])
+        })
       })
     })
 
-    it("should clear session data on failed call", function() {
-      httpBackend.whenGET(userService.api_path+'session/').respond(403, '')
-      userService.session().then(function(result) {
-        expect(userService.user.logged_in).toBeFalse()
-        expect(userService.user.data).toBeNull()
+    describe("Update method", function() {
+      it("should do a delete request", function() {
+        httpBackend.expectDELETE(userService.api_path+'1/').respond('')
+        userService.delete(1)
+      })
+
+      it("should log response on error", function() {
+        httpBackend.expectDELETE(userService.api_path+'1/').respond(403, 'Not authorized')
+        userService.delete(1).catch(function(result) {
+          expect($log.error.logs).toContain(['Not authorized'])
+        })
+      })
+    })
+
+    describe("Register method", function() {
+      it("should do a post request", function() {
+        httpBackend.expectPOST(userService.api_path+'register/').respond('')
+        userService.register('foo', 'bar')
+      })
+
+      it("should return an object with error message on fail", function() {
+        httpBackend.expectPOST(userService.api_path+'register/').respond(400, {
+          'error': 'Password is missing'
+        })
+        userService.register('foobar', 'foo').catch(function(result) {
+          expect(result.error).toEqual('Password is missing')
+        })
+      })
+
+      it("should return a generic error if no error data is received", function() {
+        httpBackend.expectPOST(userService.api_path+'register/').respond(-1, '')
+        userService.register('foobar', 'foo').catch(function(result) {
+          expect(result.error).toEqual('Server error')
+        })
+      })
+    })
+
+    describe("Login method", function() {
+      it("should set session data on successful login", function() {
+        httpBackend.expectPOST(userService.api_path+'login/').respond(fixture_userdata)
+        userService.login('foobar', 'foobar').then(function(result) {
+          expect(userService.user.logged_in).toBe(true)
+          expect(userService.user.data).toEqual(fixture_userdata)
+        })
+      })
+
+      it("should return an object with error message on fail", function() {
+        httpBackend.expectPOST(userService.api_path+'login/').respond(403, {
+          'error': 'Username or password is incorrect'
+        })
+        userService.login('foobar', 'foo').catch(function(result) {
+          expect(userService.user.logged_in).toBe(false)
+          expect(result.error).toEqual('Username or password is incorrect')
+        })
+      })
+
+      it("should return a generic error if no error data is received", function() {
+        httpBackend.expectPOST(userService.api_path+'login/').respond(-1, '')
+        userService.login('foobar', 'foo').catch(function(result) {
+          expect(result.error).toEqual('Server error')
+        })
+      })
+    })
+
+    describe("Logout method", function() {
+      it("should set login status to false on logout", function() {
+        httpBackend.expectPOST(userService.api_path+'logout/').respond('')
+        userService.logout().then(function(result) {
+          expect(userService.user.logged_in).toBe(false)
+        })
+      })
+    })
+
+    describe("Session method", function() {
+      it("should set session data on successful call", function() {
+        httpBackend.expectGET(userService.api_path+'session/').respond(fixture_userdata)
+        userService.session().then(function(result) {
+          expect(userService.user.logged_in).toBe(true)
+          expect(userService.user.data).toEqual(fixture_userdata)
+        })
+      })
+
+      it("should clear session data on failed call", function() {
+        httpBackend.expectGET(userService.api_path+'session/').respond(403, '')
+        userService.session().then(function(result) {
+          expect(userService.user.logged_in).toBe(false)
+          expect(userService.user.data).toBeNull()
+        })
       })
     })
   })
