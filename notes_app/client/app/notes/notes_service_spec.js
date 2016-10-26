@@ -49,7 +49,7 @@ describe('Service: Notes', function() {
     'objects': fixture_objects
   }
 
-  beforeEach(module('notes'))
+  beforeEach(module('notes.services'))
   beforeEach(module('test.templates'))
   beforeEach(inject(function(_notesService_, $httpBackend, _$log_) {
     notesService = _notesService_

@@ -55,7 +55,9 @@ describe('Component: Main', function() {
               }
             })
           }),
-          'logout': jasmine.createSpy('logout')
+          'logout': jasmine.createSpy('logout').and.callFake(function() {
+            return $q.when()
+          })
         }
       })
     }))

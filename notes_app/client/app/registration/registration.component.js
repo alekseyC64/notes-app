@@ -1,7 +1,7 @@
 (function() {
   'use strict';
-  RegisterCtrl.$inject = ['userService']
-  function RegisterCtrl(userService) {
+  RegisterCtrl.$inject = ['userService', '$state']
+  function RegisterCtrl(userService, $state) {
     var ctrl = this;
     ctrl.registrationState = {};
     ctrl.attemptRegistration = function(username, password, verify) {
@@ -15,6 +15,7 @@
         ctrl.registrationState['visible'] = false;
         userService.login(username, password).then(function(status) {
           ctrl.close();
+          $state.go('main.note.list');
         }).catch(function(status) {
           ctrl.registrationState['message'] = 'Problem during login; try to log in later'
           ctrl.registrationState['severity'] = 'error';

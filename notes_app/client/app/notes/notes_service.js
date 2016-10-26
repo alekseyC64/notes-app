@@ -72,5 +72,5 @@
     }
   }
 
-  angular.module('notes').factory('notesService', notesService);
+  angular.module('notes.services').factory('notesService', notesService);
 })();

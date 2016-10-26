@@ -1,8 +1,15 @@
-<div>
-    <style>.ui-grid-header-cell {height: 30px;}</style>
-    <div ui-grid="$ctrl.gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-pagination ui-grid-selection></div>
+<div class="row clearfix">
+    <ul class="list-inline pull-left" style="margin-bottom: 30px;">
+        <li ui-sref-active="active"><a href="#" ui-sref="main.note.list" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left"></span>List notes</a></li>
+    </ul>
 </div>
-<button ng-click="$ctrl.deleteSelected()" class="btn btn-danger pull-right">
-    <span class="glyphicon glyphicon-trash"></span>
-    <span>Delete selected</span>
-</button>
+<div>
+    <style>.ui-grid-header-cell {height: 30px;} .grid {height: 400px;}</style>
+    <div ui-grid="$ctrl.gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-pagination ui-grid-selection class="grid"></div>
+</div>
+<div class="row clearfix">
+    <ul class="list-inline pull-right">
+        <li><button ng-click="$ctrl.deleteSelected()" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span><span>Delete selected</span></button></li>
+    </ul>
+</div>
+

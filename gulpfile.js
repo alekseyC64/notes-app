@@ -23,7 +23,17 @@ gulp.task('buildtemplates', function() {
     }))
 })
 
-gulp.task('build', ['buildtemplates'], function() {
+gulp.task('fonts', function() {
+  gulp
+    .src(['node_modules/bootstrap-css-only/fonts/*'])
+    .pipe(gulp.dest('./notes_app/dist/fonts/'));
+  gulp
+    .src(['node_modules/angular-ui-grid/ui-grid.woff', 'node_modules/angular-ui-grid/ui-grid.ttf'])
+    .pipe(gulp.dest('./notes_app/dist/styles/'));
+});
+
+
+gulp.task('build', ['buildtemplates', 'fonts'], function() {
   return gulp
     .src('./notes_app/client/index.html')
     .pipe(inject(gulp.src('./notes_app/dist/templates.js'), {

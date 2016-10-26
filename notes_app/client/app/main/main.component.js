@@ -1,8 +1,8 @@
 (function() {
   'use strict';
 
-  MainCtrl.$inject = ['$uibModal', 'userService'];
-  function MainCtrl($uibModal, userService) {
+  MainCtrl.$inject = ['$uibModal', 'userService', '$state'];
+  function MainCtrl($uibModal, userService, $state) {
     var ctrl = this;
     ctrl.$onInit = function() {
       userService.session().then(function(user) {
@@ -20,7 +20,9 @@
       });
     };
     ctrl.logout = function() {
-      userService.logout();
+      userService.logout().then(function(){
+        $state.go('main.welcome');
+      });
     };
   };
 

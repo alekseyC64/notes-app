@@ -64,6 +64,9 @@ describe('Component: Login', function() {
     var inputs, username, password, button
 
     beforeEach(module('test.templates'))
+    beforeEach(module(function($urlRouterProvider) {
+      $urlRouterProvider.deferIntercept()
+    }))
     beforeEach(inject(function($rootScope, $compile) {
       scope = $rootScope.$new(true)
       scope.state = {}

@@ -1,13 +1,14 @@
 (function() {
   'use strict';
-  LoginCtrl.$inject = ['userService'];
-  function LoginCtrl(userService) {
+  LoginCtrl.$inject = ['userService','$state'];
+  function LoginCtrl(userService, $state) {
     var ctrl = this;
     ctrl.loginState = {};
     ctrl.attemptLogin = function(username, password) {
       userService.login(username, password).then(function(status) {
         ctrl.loginState['visible'] = false;
         ctrl.success();
+        $state.go('main.note.list');
       }).catch(function(status) {
         ctrl.loginState['visible'] = true;
         ctrl.loginState['message'] = status.error;

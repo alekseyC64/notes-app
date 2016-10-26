@@ -112,6 +112,9 @@ describe('Component: Add Note Form', function() {
 
   describe('Template', function() {
     var $httpBackend, element, scope
+    beforeEach(module(function($urlRouterProvider) {
+      $urlRouterProvider.deferIntercept()
+    }))
     beforeEach(inject(function($rootScope, $compile, _$httpBackend_, userService) {
       httpBackend = _$httpBackend_
       scope = $rootScope.$new(true)

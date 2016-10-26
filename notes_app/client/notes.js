@@ -1,6 +1,7 @@
 (function() {
   'use strict';
 
+  angular.module('notes.services', []);
   angular.module('notes', [
     'ui.router',
     'ui.select',
@@ -13,6 +14,7 @@
     'ui.grid.selection',
     'ngSanitize',
     'templates',
+    'notes.services',
     'notes.alert',
   ]);
 
@@ -25,11 +27,21 @@
       'name': 'main',
       'url': '/',
       'template': '<main></main>',
-      'abstract': true
+      'abstract': true,
+      'resolve': {
+        user: function(userService) {
+          return userService.session();
+        }
+      }
     }).state({
       'name': 'main.welcome',
       'url': 'welcome',
-      'templateUrl': 'templates/welcome.tpl.html'
+      'templateUrl': 'templates/welcome.tpl.html',
+      'onEnter': function($state, user) {
+        if (user.logged_in) {
+          $state.go('main.note.list');
+        }
+      }
     }).state({
       'name': 'main.users',
       'url': 'users',
@@ -37,11 +49,10 @@
       'data': {
         'loginRequired': true
       },
-      'onEnter': function($state, userService) {
-            var user_data = userService.user.data;
-            if (!user_data.is_superuser ) {
-                $state.go('main.note.list');
-            }
+      'onEnter': function($state, user) {
+        if (!user.data.is_superuser || !user.logged_in) {
+          $state.go('main.note.list');
+        }
       }
     }).state({
       'name': 'main.note',
@@ -50,11 +61,20 @@
       'abstract': true,
       'data': {
         'loginRequired': true,
-      }
+      },
+        'onEnter': function($state, user) {
+          if (!user.logged_in) {
+            $state.go('main.welcome');
+          }
+        }
     }).state({
       'name': 'main.note.list',
       'url': '',
       'template': '<notes-list></notes-list>'
+    }).state({
+      'name': 'main.note.listview',
+      'url': '/listview',
+      'template': '<notes-list-list></notes-list-list>'
     }).state({
       'name': 'main.note.add',
       'url': '/add',
@@ -65,17 +85,4 @@
   };
 
   angular.module('notes').config(config);
-
-  angular.module('notes').run(function($rootScope, $state, userService) {
-    $rootScope.$on('$stateChangeStart',
-      function(event, toState, toParams, fromState, fromParams, options) {
-        if (toState.data && toState.data['loginRequired']) {
-          if (!userService.user.logged_in) {
-            event.preventDefault();
-            $state.go('main.welcome');
-          }
-        }
-      }
-  );
-  })
 })();

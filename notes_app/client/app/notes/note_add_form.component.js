@@ -4,6 +4,7 @@
   NoteAddFormCtrl.$inject = ['notesService', 'userService'];
   function NoteAddFormCtrl(notesService, userService) {
     var self = this;
+
     this.note = {};
     this.users = [];
     this.selectedUsers = [];

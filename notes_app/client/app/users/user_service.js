@@ -8,6 +8,21 @@
     return {
       'user': user,
       'api_path': api_path,
+      'portion': function(data) {
+        var limit = data.pageSize;
+        var offset = (data.pageNumber - 1) * data.pageSize;
+        return $http.get(api_path, {
+          'params': {
+            'limit': limit,
+            'offset': offset
+          }
+        }).then(function successHandler(response) {
+          return response;
+        }).catch(function errorHandler(response) {
+          $log.error('Problem with fetching data from server');
+          return [];
+        });
+      },
       'list': function() {
         return $http.get(api_path).then(function successHandler(response) {
           return response.data;
@@ -55,6 +70,7 @@
       'logout': function() {
         return $http.post(api_path+'logout/').then(function(response) {
           user.logged_in = false;
+          user.data = null;
           return;
         });
       },
@@ -70,7 +86,7 @@
         })
       }
     }
-  };
+  }
 
-  angular.module('notes').factory('userService', userService);
+  angular.module('notes.services').factory('userService', userService);
 })();
