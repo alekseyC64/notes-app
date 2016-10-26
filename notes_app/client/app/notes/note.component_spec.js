@@ -67,7 +67,7 @@ describe('Component: Note', function() {
 
     it('sets working copy state when editing is toggled', function() {
       ctrl.toggleEditing()
-      expect(ctrl.isEditing).toBe(true)
+      expect(ctrl.editState).toEqual(ctrl.EDIT)
       expect(ctrl.notecopy.title).toEqual(fixture_note.title)
       expect(ctrl.notecopy.content).toEqual(fixture_note.content)
       expect(ctrl.notecopy.shared_with).toEqual(ctrl.notecopy.shared_with)
@@ -113,7 +113,7 @@ describe('Component: Note', function() {
 
     it('correctly resets note editing state', function() {
       ctrl.resetNote()
-      expect(ctrl.isEditing).toBe(false)
+      expect(ctrl.editState).toEqual(ctrl.VIEW)
       expect(ctrl.notecopy.title).not.toBeDefined()
       expect(ctrl.notecopy.content).not.toBeDefined()
       expect(ctrl.notecopy.shared_with).not.toBeDefined()
@@ -133,7 +133,7 @@ describe('Component: Note', function() {
       $httpBackend.whenGET(userService.api_path).respond('')
 
       scope = $rootScope.$new(true)
-      element = angular.element('<note note="external" is-editable="editable"></note>')
+      element = angular.element('<note note="external" options="options"></note>')
       element = $compile(element)(scope)
     }))
 
@@ -154,11 +154,10 @@ describe('Component: Note', function() {
     it('binds working data to note in editing mode', function() {
       scope.$digest()
       var controller = element.controller('note')
-      controller.isEditing = true
+      controller.editState = controller.EDIT
       controller.notecopy.title = 'Foo'
       controller.notecopy.content = 'Bar'
       controller.notecopy.selectedUsers = fixture_users
-      scope.$digest()
       scope.$digest()
 
       var title = element.find('input').eq(0),
@@ -173,7 +172,7 @@ describe('Component: Note', function() {
         'title': 'Note Title',
         'content': 'Note contend'
       }
-      scope.editable = true
+      scope.options = {'isEditable': true}
       scope.$digest()
       var buttons = element.find('button')
       expect(buttons.length).toEqual(2)
@@ -182,14 +181,27 @@ describe('Component: Note', function() {
     })
 
     it('renders ok and cancel buttons for notes in editing mode', function() {
-      scope.editable = true
+      scope.options = {'isEditable': true}
       scope.$digest()
-      element.controller('note').isEditing = true
+      var controller = element.controller('note')
+      controller.editState = controller.EDIT
       scope.$digest()
       var buttons = element.find('button')
       expect(buttons.length).toEqual(2)
       expect(buttons.eq(0).text()).toEqual('Cancel')
       expect(buttons.eq(1).text()).toEqual('OK')
+    })
+
+    it('renders confirm and cancel buttons for notes in deletion mode', function() {
+      scope.options = {'isEditable': true}
+      scope.$digest()
+      var controller = element.controller('note')
+      controller.editState = controller.DELETE
+      scope.$digest()
+      var buttons = element.find('button')
+      expect(buttons.length).toEqual(2)
+      expect(buttons.eq(0).text()).toEqual('Cancel')
+      expect(buttons.eq(1).text()).toEqual('Confirm')
     })
 
     it('does not render buttons when note is not editable', function() {
